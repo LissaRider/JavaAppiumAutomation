@@ -13,14 +13,24 @@ public class MainClassTest {
         Assert.assertEquals(message, expected, actual);
     }
 
-
     @Test
     public void getClassNumber() {
         int actual = main.getClassNumber();
         int boundary = 45;
         String message =
                 "\nОшибка! Метод \"getClassNumber\" не вернул значение больше значения \"" + boundary + "\"." +
-                "\nФактическое значение: \"" + actual + "\"\n";
+                        "\nФактическое значение: \"" + actual + "\"\n";
         Assert.assertTrue(message, actual > boundary);
+    }
+
+    @Test
+    public void testGetClassString() {
+        String actual = main.getClassString();
+        String subString = "Hello";
+        String message =
+                "\nОшибка! Метод \"getClassString\" не вернул строку, в которой есть подстрока \"" + subString +
+                        "\" или \"" + subString.toLowerCase() + "\"." +
+                        "\nФактическое значение: \"" + actual + "\"\n";
+        Assert.assertTrue(message, actual.toLowerCase().contains(subString.toLowerCase()));
     }
 }
