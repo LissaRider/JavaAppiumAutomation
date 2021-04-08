@@ -46,8 +46,7 @@ public class FirstTest {
     elementToInitSearch.click();
     WebElement elementToEnterSearchLine = waitForElementPresentByPath(
             "//*[contains(@text,'Search…')]",
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
+            "Внимание! Поле ввода текста для поиска не найдено."
     );
     elementToEnterSearchLine.sendKeys("Appium");
   }
@@ -57,5 +56,9 @@ public class FirstTest {
     wait.withMessage("\n  " + errorMessage + "\n");
     By by = By.xpath(xpath);
     return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+  }
+
+  private WebElement waitForElementPresentByPath(String xpath, String errorMessage) {
+    return waitForElementPresentByPath(xpath, errorMessage, 5);
   }
 }
