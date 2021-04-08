@@ -66,6 +66,28 @@ public class FirstTest {
   }
 
   @Test
+  public void testSearchPlaceholder() {
+
+    waitForElementAndClick(
+            By.id("org.wikipedia:id/search_container"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    waitForElementPresent(
+            By.id("org.wikipedia:id/search_src_text"),
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    assertElementHasText(
+            By.id("org.wikipedia:id/search_src_text"),
+            "Search…",
+            "\n Внимание! Поле ввода для поиска статьи содержит некорректный текст."
+    );
+  }
+
+  @Test
   public void testCancelSearch() {
 
     waitForElementAndClick(
@@ -133,9 +155,14 @@ public class FirstTest {
 
     Assert.assertEquals(
             "\n Внимание! Отображается некорректный заголовок статьи.",
-            "Java (programming language)1",
+            "Java (programming language)",
             articleTitle
     );
+  }
+
+  private void assertElementHasText(By by, String expected, String errorMessage) {
+    String actual = driver.findElement(by).getAttribute("text");
+    Assert.assertEquals(errorMessage, expected, actual);
   }
 
   private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
