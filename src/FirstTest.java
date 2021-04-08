@@ -64,6 +64,28 @@ public class FirstTest {
     );
   }
 
+  @Test
+  public void testCancelSearch() {
+
+    waitForElementByIdAndClick(
+            "org.wikipedia:id/search_container",
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    waitForElementByIdAndClick(
+            "org.wikipedia:id/search_close_btn",
+            "Внимание! Кнопка отмены поиска не найдена.",
+            5
+    );
+
+    waitForElementNotPresentById(
+            "org.wikipedia:id/search_close_btn",
+            "Внимание! Кнопка отмены поиска все ещё отображается.",
+            5
+    );
+  }
+
   private WebElement waitForElementPresentByXpath(String xpath, String errorMessage, long timeoutInSeconds) {
     WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
     wait.withMessage("\n  " + errorMessage + "\n");
@@ -85,5 +107,25 @@ public class FirstTest {
     WebElement element = waitForElementPresentByXpath(xpath, errorMessage, timeoutInSeconds);
     element.sendKeys(value);
     return element;
+  }
+
+  private WebElement waitForElementPresentById(String id, String errorMessage, long timeoutInSeconds) {
+    WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+    wait.withMessage("\n  " + errorMessage + "\n");
+    By by = By.id(id);
+    return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+  }
+
+  private WebElement waitForElementByIdAndClick(String id, String errorMessage, long timeoutInSeconds) {
+    WebElement element = waitForElementPresentById(id, errorMessage, timeoutInSeconds);
+    element.click();
+    return element;
+  }
+
+  private boolean waitForElementNotPresentById(String id, String errorMessage, long timeoutInSeconds) {
+    WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+    wait.withMessage("\n  " + errorMessage + "\n");
+    By by = By.id(id);
+    return wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
   }
 }
