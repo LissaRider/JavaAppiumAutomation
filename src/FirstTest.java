@@ -44,11 +44,19 @@ public class FirstTest {
   public void firstTest() {
     WebElement elementToInitSearch = driver.findElementByXPath("//*[contains(@text,'Search Wikipedia')]");
     elementToInitSearch.click();
+
     WebElement elementToEnterSearchLine = waitForElementPresentByPath(
             "//*[contains(@text,'Search…')]",
             "Внимание! Поле ввода текста для поиска не найдено."
     );
-    elementToEnterSearchLine.sendKeys("Appium");
+
+    elementToEnterSearchLine.sendKeys("Java");
+    waitForElementPresentByPath(
+            "//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@text='Object-oriented programming language']",
+            "Внимание! Текст 'Object-oriented programming language' не найден.",
+            15
+    );
   }
 
   private WebElement waitForElementPresentByPath(String xpath, String errorMessage, long timeoutInSeconds) {
