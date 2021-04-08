@@ -1,5 +1,6 @@
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -96,6 +97,44 @@ public class FirstTest {
             By.id("org.wikipedia:id/search_close_btn"),
             "Внимание! Кнопка отмены поиска все ещё отображается.",
             5
+    );
+  }
+
+  @Test
+  public void testCompareArticleTitle() {
+
+    waitForElementAndClick(
+            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            "Java",
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@text='Object-oriented programming language']"),
+            "Внимание! Текст 'Object-oriented programming language' не найден.",
+            5
+    );
+
+    WebElement titleElement = waitForElementPresent(
+            By.id("org.wikipedia:id/view_page_title_text"),
+            "Внимание! Заголовок статьи не найден.",
+            15
+    );
+
+    String articleTitle = titleElement.getAttribute("text");
+
+    Assert.assertEquals(
+            "\n Внимание! Отображается некорректный заголовок статьи.",
+            "Java (programming language)1",
+            articleTitle
     );
   }
 
