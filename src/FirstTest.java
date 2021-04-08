@@ -2,8 +2,11 @@ import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.net.URL;
@@ -39,7 +42,20 @@ public class FirstTest {
 
   @Test
   public void firstTest() {
-    WebElement element = driver.findElementByXPath("//*[contains(@text,'Search Wikipedia')]");
-    element.click();
+    WebElement elementToInitSearch = driver.findElementByXPath("//*[contains(@text,'Search Wikipedia')]");
+    elementToInitSearch.click();
+    WebElement elementToEnterSearchLine = waitForElementPresentByPath(
+            "//*[contains(@text,'Search…')]",
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+    elementToEnterSearchLine.sendKeys("Appium");
+  }
+
+  private WebElement waitForElementPresentByPath(String xpath, String errorMessage, long timeoutInSeconds) {
+    WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+    wait.withMessage("\n  " + errorMessage + "\n");
+    By by = By.xpath(xpath);
+    return wait.until(ExpectedConditions.presenceOfElementLocated(by));
   }
 }
