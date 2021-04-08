@@ -73,6 +73,19 @@ public class FirstTest {
             5
     );
 
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            "Java",
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    waitForElementAndClear(
+            By.id("org.wikipedia:id/search_src_text"),
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
     waitForElementAndClick(
             By.id("org.wikipedia:id/search_close_btn"),
             "Внимание! Кнопка отмены поиска не найдена.",
@@ -112,5 +125,11 @@ public class FirstTest {
     WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
     wait.withMessage("\n  " + errorMessage + "\n");
     return wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+  }
+
+  private WebElement waitForElementAndClear(By by, String errorMessage, long timeoutInSeconds) {
+    WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
+    element.clear();
+    return element;
   }
 }
