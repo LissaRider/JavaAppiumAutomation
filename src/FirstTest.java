@@ -202,6 +202,41 @@ public class FirstTest {
     );
   }
 
+  @Test
+  public void testSearchResults() {
+
+    final String searchValue = "JAVA";
+
+    waitForElementAndClick(
+            By.id("org.wikipedia:id/search_container"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+
+    waitForElementAndSendKeys(
+            By.id("org.wikipedia:id/search_src_text"),
+            searchValue,
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    List<WebElement> articleTitles = waitForPresenceOfAllElements(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
+            "Внимание! Не найдено ни одной статьи.",
+            15
+    );
+
+    for (int i = 0; i < articleTitles.size(); i++) {
+      String articleTitle = articleTitles.get(i).getAttribute("text").toLowerCase();
+      Assert.assertTrue(
+              "\n Внимание! В заголовке найденной статьи с индексом [" + i + "]" +
+                      " отсутствует заданное для поиска значение '" + searchValue + "'.\n",
+              articleTitle.contains(searchValue.toLowerCase()));
+    }
+  }
+
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
     Assert.assertEquals(errorMessage, expected, actual);
@@ -212,6 +247,7 @@ public class FirstTest {
     wait.withMessage("\n  " + errorMessage + "\n");
     return wait.until(ExpectedConditions.presenceOfElementLocated(by));
   }
+
 
   private WebElement waitForElementPresent(By by, String errorMessage) {
     return waitForElementPresent(by, errorMessage, 5);
@@ -245,5 +281,11 @@ public class FirstTest {
     WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
     wait.withMessage("\n  " + errorMessage + "\n");
     return wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(by, number));
+  }
+
+  private List<WebElement> waitForPresenceOfAllElements(By by, String errorMessage, long timeoutInSeconds) {
+    WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+    wait.withMessage("\n  " + errorMessage + "\n");
+    return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
   }
 }
