@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -123,6 +124,47 @@ public class FirstTest {
   }
 
   @Test
+  public void testSearchAndClear() {
+
+    // инициируем поиск
+    waitForElementAndClick(
+            By.id("org.wikipedia:id/search_container"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    // вводим соответствующее значение для поиска
+    waitForElementAndSendKeys(
+            By.id("org.wikipedia:id/search_src_text"),
+            "Java",
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    // ждем отображения списка с количеством статей больше 1 (несколько статей)
+    waitForNumberOfElementsToBeMoreThan(
+            By.id("org.wikipedia:id/page_list_item_container"),
+            1,
+            "Внимание! Не найдено ни одной статьи или найдено статей меньше ожидаемого количества.",
+            15
+    );
+
+    // чистим поле ввода (переиспользуем уже существующий метод, хотя ожидание здесь не требуется)
+    waitForElementAndClear(
+            By.id("org.wikipedia:id/search_src_text"),
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    // ждем чтобы ни одна статья не отображалась (тут может быть много вариаций)
+    waitForElementNotPresent(
+            By.id("org.wikipedia:id/page_list_item_container"),
+            "Внимание! Список статей все ещё отображается.",
+            15
+    );
+  }
+
+  @Test
   public void testCompareArticleTitle() {
 
     waitForElementAndClick(
@@ -197,5 +239,11 @@ public class FirstTest {
     WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
     element.clear();
     return element;
+  }
+
+  private List<WebElement> waitForNumberOfElementsToBeMoreThan(By by, int number, String errorMessage, long timeoutInSeconds) {
+    WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+    wait.withMessage("\n  " + errorMessage + "\n");
+    return wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(by, number));
   }
 }
