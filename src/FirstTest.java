@@ -390,6 +390,38 @@ public class FirstTest {
     );
   }
 
+  @Test
+  public void testAmountOfNotEmptySearch() {
+
+    waitForElementAndClick(
+            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    String searchLine = "Linkin Park Discography";
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            searchLine,
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    String searchResultLocator = "//*[@resource-id='org.wikipedia:id/search_results_list']" +
+            "/*[@resource-id='org.wikipedia:id/page_list_item_container']";
+
+    waitForElementPresent(
+            By.xpath(searchResultLocator),
+            String.format("Внимание! По запросу поиска '%s' ничего не найдено.", searchLine),
+            15
+    );
+
+    int amountOfSearchResults = getAmountOfElements(By.xpath(searchResultLocator));
+
+    Assert.assertTrue("Найдено меньше результатов, чем ожидалось.",
+            amountOfSearchResults > 1);
+  }
+
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
     Assert.assertEquals(errorMessage, expected, actual);
@@ -495,5 +527,10 @@ public class FirstTest {
             .moveTo(leftX, middleY)
             .release()
             .perform();
+  }
+
+  private int getAmountOfElements(By by) {
+    List<?> elements = driver.findElements(by);
+    return elements.size();
   }
 }
