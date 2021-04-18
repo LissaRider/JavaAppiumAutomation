@@ -422,6 +422,40 @@ public class FirstTest {
             amountOfSearchResults > 1);
   }
 
+  @Test
+  public void testAmountOfEmptySearch() {
+
+    waitForElementAndClick(
+            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    String searchLine = "TIJIIOLLIKA";
+
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            searchLine,
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    String searchResultLocator = "//*[@resource-id='org.wikipedia:id/search_results_list']" +
+            "/*[@resource-id='org.wikipedia:id/page_list_item_container']";
+
+    String emptyResultLabelLocator = "//*[@text='No results found']";
+
+    waitForElementPresent(
+            By.xpath(emptyResultLabelLocator),
+            String.format("Внимание! По запросу поиска '%s' лэйбл 'No results found' не отобразился.", searchLine),
+            15
+    );
+
+    assertElementNotPresent(By.xpath(searchResultLocator),
+            String.format("Найдены результаты по запросу поиска '%s'.", searchLine));
+  }
+
+
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
     Assert.assertEquals(errorMessage, expected, actual);
@@ -532,5 +566,13 @@ public class FirstTest {
   private int getAmountOfElements(By by) {
     List<?> elements = driver.findElements(by);
     return elements.size();
+  }
+
+  private void assertElementNotPresent(By by, String errorMessage) {
+    int amountOfSearchResults = getAmountOfElements(by);
+    if (amountOfSearchResults > 0) {
+      String defaultMessage = String.format("\n  Внимание! Элемент c локатором '%s' должен отсутствовать.\n  ", by);
+      throw new AssertionError(defaultMessage + errorMessage);
+    }
   }
 }
