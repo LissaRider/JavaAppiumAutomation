@@ -333,9 +333,11 @@ public class FirstTest {
             5
     );
 
+    String folderName = "Learning programming";
+
     waitForElementAndSendKeys(
             By.id("org.wikipedia:id/text_input"),
-            "Learning programming",
+            folderName,
             "Внимание! Невозможно ввести текст в поле ввода имени папки для добавления статьи.",
             5
     );
@@ -365,7 +367,7 @@ public class FirstTest {
     );
 
     waitForElementAndClick(
-            By.xpath("//*[@text='Learning programming']"),
+            By.xpath(String.format("//*[@text='%s']", folderName)),
             "Внимание! Папка 'Learning programming' не найдена.",
             5
     );
@@ -478,7 +480,7 @@ public class FirstTest {
 
   protected void swipeElementToLeft(By by, String errorMessage) {
 
-    WebElement element = waitForElementPresent(by, errorMessage, 300);
+    WebElement element = waitForElementPresent(by, errorMessage, 10);
 
     int leftX = element.getLocation().getX();
     int rightX = leftX + element.getSize().getWidth();
@@ -489,7 +491,7 @@ public class FirstTest {
     TouchAction action = new TouchAction(driver);
     action
             .press(rightX, middleY)
-            .waitAction(150)
+            .waitAction(300)
             .moveTo(leftX, middleY)
             .release()
             .perform();
