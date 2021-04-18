@@ -274,6 +274,120 @@ public class FirstTest {
     }
   }
 
+  @Test
+  public void saveFirstArticleToMyList() {
+
+    waitForElementAndClick(
+            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            "Java",
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@text='Object-oriented programming language']"),
+            "Внимание! Текст 'Object-oriented programming language' не найден.",
+            5
+    );
+
+    waitForElementPresent(
+            By.id("org.wikipedia:id/view_page_title_text"),
+            "Внимание! Заголовок статьи не найден.",
+            15
+    );
+
+    waitForElementAndClick(
+            By.xpath("//android.widget.ImageView[@content-desc='More options']"),
+            "Внимание! Кнопка открытия панели действий со статьёй не найдена.",
+            5
+    );
+
+    waitForElementVisible(
+            By.xpath("//android.widget.ListView"),
+            "Внимание! Контекстное меню не найдено.",
+            15
+    );
+
+    waitForElementAndClick(
+            By.xpath("//*[@text='Add to reading list']"),
+            "Внимание! Элемент добавления статьи в список не найден.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.id("org.wikipedia:id/onboarding_button"),
+            "Внимание! Кнопка 'GOT IT' не найдена.",
+            5
+    );
+
+    waitForElementAndClear(
+            By.id("org.wikipedia:id/text_input"),
+            "Поле ввода имени папки для добавления статьи не найдено.",
+            5
+    );
+
+    waitForElementAndSendKeys(
+            By.id("org.wikipedia:id/text_input"),
+            "Learning programming",
+            "Внимание! Невозможно ввести текст в поле ввода имени папки для добавления статьи.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.xpath("//*[@text='OK']"),
+            "Внимание! Невозможно нажать на кнопку 'OK'.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+            "Внимание! Кнопка закрытия статьи не найдена.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.xpath("//android.widget.FrameLayout[@content-desc='My lists']"),
+            "Внимание! Кнопка перехода к спискам не найдена.",
+            5
+    );
+
+    waitForElementVisible(
+            By.xpath("//*[@resource-id='org.wikipedia:id/item_container']"),
+            "Внимание! Ни одной папки не найдено.",
+            15
+    );
+
+    waitForElementAndClick(
+            By.xpath("//*[@text='Learning programming']"),
+            "Внимание! Папка 'Learning programming' не найдена.",
+            5
+    );
+
+    waitForElementVisible(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
+            "Внимание! Ни одной статьи не найдено.",
+            15
+    );
+
+    swipeElementToLeft(
+            By.xpath("//*[@text='Java (programming language)']"),
+            "Внимание! В списке статья 'Java (programming language)' не найдена."
+    );
+
+    waitForElementNotPresent(
+            By.xpath("//*[@text='Java (programming language)']"),
+            "Внимание! Статья 'Java (programming language)' не удалилась из списка.",
+            15
+    );
+  }
+
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
     Assert.assertEquals(errorMessage, expected, actual);
@@ -285,6 +399,11 @@ public class FirstTest {
     return wait.until(ExpectedConditions.presenceOfElementLocated(by));
   }
 
+  private WebElement waitForElementVisible(By by, String errorMessage, long timeoutInSeconds) {
+    WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+    wait.withMessage("\n  " + errorMessage + "\n");
+    return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+  }
 
   private WebElement waitForElementPresent(By by, String errorMessage) {
     return waitForElementPresent(by, errorMessage, 5);
@@ -332,7 +451,12 @@ public class FirstTest {
     int x = size.width / 2;
     int startY = (int) (size.height * 0.8);
     int endY = (int) (size.height * 0.2);
-    action.press(x, startY).waitAction(timeOfSwipe).moveTo(x, endY).release().perform();
+    action
+            .press(x, startY)
+            .waitAction(timeOfSwipe)
+            .moveTo(x, endY)
+            .release()
+            .perform();
   }
 
   protected void swipeUpQuick() {
@@ -343,11 +467,31 @@ public class FirstTest {
     int alreadySwiped = 0;
     while (driver.findElements(by).size() == 0) {
       if (alreadySwiped > maxSwipes) {
-        waitForElementPresent(by, "При прокрутке вниз элемент не найден.\n" + errorMessage, 0);
+        waitForElementPresent(by, "Внимание! При прокрутке вниз элемент с локатором '" + by + "' не найден.\n" +
+                errorMessage, 0);
         return;
       }
       swipeUpQuick();
       ++alreadySwiped;
     }
+  }
+
+  protected void swipeElementToLeft(By by, String errorMessage) {
+
+    WebElement element = waitForElementPresent(by, errorMessage, 300);
+
+    int leftX = element.getLocation().getX();
+    int rightX = leftX + element.getSize().getWidth();
+    int upperY = element.getLocation().getY();
+    int lowerY = upperY + element.getSize().getHeight();
+    int middleY = (upperY + lowerY) / 2;
+
+    TouchAction action = new TouchAction(driver);
+    action
+            .press(rightX, middleY)
+            .waitAction(150)
+            .moveTo(leftX, middleY)
+            .release()
+            .perform();
   }
 }
