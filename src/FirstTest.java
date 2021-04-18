@@ -519,6 +519,39 @@ public class FirstTest {
     );
   }
 
+  @Test
+  public void testCheckSearchArticleInBackground() {
+
+    waitForElementAndClick(
+            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            "Java",
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    waitForElementPresent(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@text='Object-oriented programming language']"),
+            "Внимание! Текст 'Object-oriented programming language' не найден.",
+            5
+    );
+
+    driver.runAppInBackground(2);
+
+    waitForElementPresent(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@text='Object-oriented programming language']"),
+            "Внимание! После сворачивания/разворачивания приложения текст 'Object-oriented programming language' не найден.",
+            5
+    );
+  }
+
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
     Assert.assertEquals(errorMessage, expected, actual);
