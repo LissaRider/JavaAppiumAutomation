@@ -215,15 +215,14 @@ public class FirstTest {
 
     waitForElementAndSendKeys(
             By.xpath("//*[contains(@text,'Search…')]"),
-            "Java",
+            "Appium",
             "Внимание! Поле ввода текста для поиска не найдено.",
             5
     );
 
     waitForElementAndClick(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
-                    "//*[@text='Object-oriented programming language']"),
-            "Внимание! Текст 'Object-oriented programming language' не найден.",
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='Appium']"),
+            "Внимание! Статья с заголовком 'Appium' не найдена.",
             5
     );
 
@@ -233,7 +232,11 @@ public class FirstTest {
             15
     );
 
-    swipeUp(2000);
+    swipeUpToFindElement(
+            By.xpath(".//*[@text='View page in browser']"),
+            "  Конец статьи не найден.",
+            20
+    );
   }
 
   @Test
@@ -330,5 +333,21 @@ public class FirstTest {
     int startY = (int) (size.height * 0.8);
     int endY = (int) (size.height * 0.2);
     action.press(x, startY).waitAction(timeOfSwipe).moveTo(x, endY).release().perform();
+  }
+
+  protected void swipeUpQuick() {
+    swipeUp(200);
+  }
+
+  protected void swipeUpToFindElement(By by, String errorMessage, int maxSwipes) {
+    int alreadySwiped = 0;
+    while (driver.findElements(by).size() == 0) {
+      if (alreadySwiped > maxSwipes) {
+        waitForElementPresent(by, "При прокрутке вниз элемент не найден.\n" + errorMessage, 0);
+        return;
+      }
+      swipeUpQuick();
+      ++alreadySwiped;
+    }
   }
 }
