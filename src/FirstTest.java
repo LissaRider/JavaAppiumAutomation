@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -455,6 +456,68 @@ public class FirstTest {
             String.format("Найдены результаты по запросу поиска '%s'.", searchLine));
   }
 
+  @Test
+  public void testChangeScreenOrientationOnSearchResults() {
+
+    waitForElementAndClick(
+            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+            "Внимание! Элемент 'Search Wikipedia' не найден.",
+            5
+    );
+
+    String searchLine = "Java";
+
+    waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text,'Search…')]"),
+            searchLine,
+            "Внимание! Поле ввода текста для поиска не найдено.",
+            5
+    );
+
+    waitForElementAndClick(
+            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                    "//*[@text='Object-oriented programming language']"),
+            String.format("Внимание! По запросу поиска '%s' текст 'Object-oriented programming language' не найден.", searchLine),
+            15
+    );
+
+    String titleBeforeRotation = waitForElementAndGetAttribute(
+            By.id("org.wikipedia:id/view_page_title_text"),
+            "text",
+            "Внимание! Название статьи не найдено.",
+            15
+    );
+
+    driver.rotate(ScreenOrientation.LANDSCAPE);
+
+    String titleAfterRotation = waitForElementAndGetAttribute(
+            By.id("org.wikipedia:id/view_page_title_text"),
+            "text",
+            "Внимание! Название статьи не найдено.",
+            15
+    );
+
+    Assert.assertEquals(
+            "\n  Внимание! Название статьи изменилось после изменения ориентации экрана.\n",
+            titleBeforeRotation,
+            titleAfterRotation
+    );
+
+    driver.rotate(ScreenOrientation.PORTRAIT);
+
+    String titleAfterSecondRotation = waitForElementAndGetAttribute(
+            By.id("org.wikipedia:id/view_page_title_text"),
+            "text",
+            "Внимание! Название статьи не найдено.",
+            15
+    );
+
+    Assert.assertEquals(
+            "\n  Внимание! Название статьи изменилось после изменения ориентации экрана.\n",
+            titleBeforeRotation,
+            titleAfterSecondRotation
+    );
+  }
 
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
@@ -574,5 +637,10 @@ public class FirstTest {
       String defaultMessage = String.format("\n  Внимание! Элемент c локатором '%s' должен отсутствовать.\n  ", by);
       throw new AssertionError(defaultMessage + errorMessage);
     }
+  }
+
+  private String waitForElementAndGetAttribute(By by, String attribute, String errorMessage, long timeoutInSec) {
+    WebElement element = waitForElementPresent(by, errorMessage, timeoutInSec);
+    return element.getAttribute(attribute);
   }
 }
