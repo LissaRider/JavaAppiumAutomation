@@ -639,6 +639,42 @@ public class FirstTest {
     );
   }
 
+  @Test
+  public void testArticleTitlePresence() {
+
+    String searchLine = "Lords Mobile";
+
+    By resultItemLocator = By.id("org.wikipedia:id/page_list_item_container");
+    By resultTitleLocator = By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='" + searchLine + "']");
+    By pageTitleLocator = By.id("org.wikipedia:id/view_page_title_text");
+
+    searchFor(searchLine);
+
+    waitForNumberOfElementsToBeMoreThan(
+            resultItemLocator,
+            0,
+            "Внимание! В результатах поиска ни одной статьи не найдено.",
+            15
+    );
+
+    waitForElementClickableAndClick(
+            resultTitleLocator,
+            String.format("Внимание! Статья с заголовком '%s' не найдена или недоступна для действий.", searchLine),
+            5
+    );
+
+    assertElementPresent(pageTitleLocator, "Заголовок статьи не найден.");
+  }
+
+  private boolean assertElementPresent(By by, String errorMessage) {
+    try {
+      return getAmountOfElements(by) > 0;
+    } catch (Exception e) {
+      String defaultMessage = String.format("\n  Внимание! Элемент c локатором '%s' должен присутствовать.\n  ", by);
+      throw new AssertionError(defaultMessage + errorMessage);
+    }
+  }
+
   private void assertElementHasText(By by, String expected, String errorMessage) {
     String actual = driver.findElement(by).getAttribute("text");
     Assert.assertEquals(errorMessage, expected, actual);
