@@ -26,6 +26,7 @@ public class FirstTest {
     capabilities.setCapability("automationName", "Appium");
     capabilities.setCapability("appPackage", "org.wikipedia");
     capabilities.setCapability("appActivity", ".main.MainActivity");
+    capabilities.setCapability("orientation", "PORTRAIT");
 
     String oldWikiPath = "./apks/org.wikipedia.old.apk";
     capabilities.setCapability("app", new File(oldWikiPath).getCanonicalPath());
