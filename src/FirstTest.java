@@ -53,36 +53,12 @@ public class FirstTest extends CoreTestCase {
   @Test
   public void testCancelSearch() {
 
-    mainPageObject.waitForElementAndClick(
-            By.id("org.wikipedia:id/search_container"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
 
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            "Java",
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClear(
-            By.id("org.wikipedia:id/search_src_text"),
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.id("org.wikipedia:id/search_close_btn"),
-            "Внимание! Кнопка отмены поиска не найдена.",
-            5
-    );
-
-    mainPageObject.waitForElementNotPresent(
-            By.id("org.wikipedia:id/search_close_btn"),
-            "Внимание! Кнопка отмены поиска все ещё отображается.",
-            5
-    );
+    searchPageObject.initSearchInput();
+    searchPageObject.waitForCancelButtonToAppear();
+    searchPageObject.clickCancelButton();
+    searchPageObject.waitForCancelButtonToDisappear();
   }
 
   @Test
