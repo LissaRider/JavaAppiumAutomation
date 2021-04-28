@@ -1,7 +1,5 @@
 import lib.CoreTestCase;
-import lib.ui.ArticlePageObject;
-import lib.ui.MainPageObject;
-import lib.ui.SearchPageObject;
+import lib.ui.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -177,117 +175,24 @@ public class FirstTest extends CoreTestCase {
   @Test
   public void testSaveFirstArticleToMyList() {
 
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Java");
+    searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            "Java",
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
-                    "//*[@text='Object-oriented programming language']"),
-            "Внимание! Текст 'Object-oriented programming language' не найден.",
-            5
-    );
-
-    mainPageObject.waitForElementPresent(
-            By.id("org.wikipedia:id/view_page_title_text"),
-            "Внимание! Заголовок статьи не найден.",
-            15
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//android.widget.ImageView[@content-desc='More options']"),
-            "Внимание! Кнопка открытия панели действий со статьёй не найдена.",
-            5
-    );
-
-    mainPageObject.waitForElementVisible(
-            By.xpath("//android.widget.ListView"),
-            "Внимание! Контекстное меню не найдено.",
-            15
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[@text='Add to reading list']"),
-            "Внимание! Элемент добавления статьи в список не найден.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.id("org.wikipedia:id/onboarding_button"),
-            "Внимание! Кнопка 'GOT IT' не найдена.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClear(
-            By.id("org.wikipedia:id/text_input"),
-            "Поле ввода имени папки для добавления статьи не найдено.",
-            5
-    );
-
+    ArticlePageObject articlePageObject = new ArticlePageObject(driver);
+    articlePageObject.waitForTitleElement();
+    String articleTitle = articlePageObject.getArticleTitle();
     String folderName = "Learning programming";
+    articlePageObject.addArticleToMyList(folderName);
+    articlePageObject.closeArticle();
 
-    mainPageObject.waitForElementAndSendKeys(
-            By.id("org.wikipedia:id/text_input"),
-            folderName,
-            "Внимание! Невозможно ввести текст в поле ввода имени папки для добавления статьи.",
-            5
-    );
+    NavigationUI navigationUI = new NavigationUI(driver);
+    navigationUI.clickMyLists();
 
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[@text='OK']"),
-            "Внимание! Невозможно нажать на кнопку 'OK'.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
-            "Внимание! Кнопка закрытия статьи не найдена.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//android.widget.FrameLayout[@content-desc='My lists']"),
-            "Внимание! Кнопка перехода к спискам не найдена.",
-            5
-    );
-
-    mainPageObject.waitForElementVisible(
-            By.xpath("//*[@resource-id='org.wikipedia:id/item_container']"),
-            "Внимание! Ни одной папки не найдено.",
-            15
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath(String.format("//*[@text='%s']", folderName)),
-            "Внимание! Папка 'Learning programming' не найдена.",
-            5
-    );
-
-    mainPageObject.waitForElementVisible(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
-            "Внимание! Ни одной статьи не найдено.",
-            15
-    );
-
-    mainPageObject.swipeElementToLeft(
-            By.xpath("//*[@text='Java (programming language)']"),
-            "Внимание! В списке статья 'Java (programming language)' не найдена."
-    );
-
-    mainPageObject.waitForElementNotPresent(
-            By.xpath("//*[@text='Java (programming language)']"),
-            "Внимание! Статья 'Java (programming language)' не удалилась из списка.",
-            15
-    );
+    MyListsPageObject myListsPageObject = new MyListsPageObject(driver);
+    myListsPageObject.openFolderByName(folderName);
+    myListsPageObject.swipeByArticleToDelete(articleTitle);
   }
 
   @Test
