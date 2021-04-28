@@ -19,9 +19,7 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testSearch() {
-
     SearchPageObject searchPageObject = new SearchPageObject(driver);
-
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
     searchPageObject.waitForSearchResult("Object-oriented programming language");
@@ -51,9 +49,7 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testCancelSearch() {
-
     SearchPageObject searchPageObject = new SearchPageObject(driver);
-
     searchPageObject.initSearchInput();
     searchPageObject.waitForCancelButtonToAppear();
     searchPageObject.clickCancelButton();
@@ -103,17 +99,13 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testCompareArticleTitle() {
-
     SearchPageObject searchPageObject = new SearchPageObject(driver);
-
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
     searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
     ArticlePageObject articlePageObject = new ArticlePageObject(driver);
-
     String articleTitle = articlePageObject.getArticleTitle();
-
 
     Assert.assertEquals(
             "\n Внимание! Отображается некорректный заголовок статьи.",
@@ -124,15 +116,12 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testSwipeArticle() {
-
     SearchPageObject searchPageObject = new SearchPageObject(driver);
-
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Appium");
     searchPageObject.clickByArticleWithSubstring("Appium");
 
     ArticlePageObject articlePageObject = new ArticlePageObject(driver);
-
     articlePageObject.waitForTitleElement();
     articlePageObject.swipeToFooter();
   }
@@ -174,7 +163,6 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testSaveFirstArticleToMyList() {
-
     SearchPageObject searchPageObject = new SearchPageObject(driver);
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
@@ -197,31 +185,11 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testAmountOfNotEmptySearch() {
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
-
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
     String searchLine = "Linkin Park Discography";
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            searchLine,
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    String searchResultLocator = "//*[@resource-id='org.wikipedia:id/search_results_list']" +
-            "/*[@resource-id='org.wikipedia:id/page_list_item_container']";
-
-    mainPageObject.waitForElementPresent(
-            By.xpath(searchResultLocator),
-            String.format("Внимание! По запросу поиска '%s' ничего не найдено.", searchLine),
-            15
-    );
-
-    int amountOfSearchResults = mainPageObject.getAmountOfElements(By.xpath(searchResultLocator));
+    searchPageObject.typeSearchLine(searchLine);
+    int amountOfSearchResults = searchPageObject.getAmountOfFoundArticles();
 
     Assert.assertTrue("Найдено меньше результатов, чем ожидалось.",
             amountOfSearchResults > 1);
@@ -229,35 +197,12 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testAmountOfEmptySearch() {
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
-
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
     String searchLine = "TIJIIOLLIKA";
-
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            searchLine,
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    String searchResultLocator = "//*[@resource-id='org.wikipedia:id/search_results_list']" +
-            "/*[@resource-id='org.wikipedia:id/page_list_item_container']";
-
-    String emptyResultLabelLocator = "//*[@text='No results found']";
-
-    mainPageObject.waitForElementPresent(
-            By.xpath(emptyResultLabelLocator),
-            String.format("Внимание! По запросу поиска '%s' лэйбл 'No results found' не отобразился.", searchLine),
-            15
-    );
-
-    mainPageObject.assertElementNotPresent(By.xpath(searchResultLocator),
-            String.format("Найдены результаты по запросу поиска '%s'.", searchLine));
+    searchPageObject.typeSearchLine(searchLine);
+    searchPageObject.waitForEmptyResultsLabel();
+    searchPageObject.assertThereIsNoResultOfSearch();
   }
 
   @Test
