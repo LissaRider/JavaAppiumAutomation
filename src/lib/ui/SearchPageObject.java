@@ -18,7 +18,11 @@ public class SearchPageObject extends MainPageObject {
           SEARCH_RESULT_BY_TITLE_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']",
           SEARCH_RESULT_LIST_ITEM = "org.wikipedia:id/page_list_item_container",
           SEARCH_RESULT_LIST = "org.wikipedia:id/search_results_list",
-          SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']";
+          SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
+          SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL =
+                  "//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
+                  "[.//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{ARTICLE_TITLE}']]" +
+                  "[.//*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{ARTICLE_DESCRIPTION}']]";
 
   public SearchPageObject(AppiumDriver<?> driver) {
     super(driver);
@@ -32,7 +36,22 @@ public class SearchPageObject extends MainPageObject {
   private static String getResultSearchElementWithTitle(String articleTitle) {
     return SEARCH_RESULT_BY_TITLE_TPL.replace("{TITLE}", articleTitle);
   }
+
+  private static String getArticleWithTitleAndDescription(String articleTitle, String articleDescription) {
+    return SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL
+            .replace("{ARTICLE_TITLE}", articleTitle)
+            .replace("{ARTICLE_DESCRIPTION}", articleDescription);
+  }
   //endregion
+
+  public void waitForElementByTitleAndDescription(String title, String description) {
+    String articleWithTitleAndDescriptionXpath = getArticleWithTitleAndDescription(title, description);
+    this.waitForElementPresent(
+            By.xpath(articleWithTitleAndDescriptionXpath),
+            String.format("Не найдена статья с заголовком '%s' и описанием '%s'.", title, description),
+            15
+    );
+  }
 
   public void initSearchInput() {
     String searchWikiMessageError = "элемент 'Search Wikipedia' не найден или недоступен для действий";

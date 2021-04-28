@@ -5,7 +5,9 @@ import lib.ui.SearchPageObject;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchTests extends CoreTestCase {
 
@@ -34,7 +36,9 @@ public class SearchTests extends CoreTestCase {
     searchPageObject.typeSearchLine(searchLine);
     int amountOfSearchResults = searchPageObject.getAmountOfFoundArticles();
 
-    assertTrue("\n  Ошибка! Найдено меньше результатов, чем ожидалось.\n", amountOfSearchResults > 1);
+    assertTrue(
+            String.format("\n  Ошибка! Найдено меньше результатов, чем ожидалось: %d.\n",amountOfSearchResults),
+            amountOfSearchResults > 1);
   }
 
   @Test
@@ -74,8 +78,28 @@ public class SearchTests extends CoreTestCase {
     for (int i = 0; i < articleTitles.size(); i++) {
       String articleTitle = articleTitles.get(i).getAttribute("text").toLowerCase();
       assertTrue(
-              String.format("\n  Ошибка! В заголовке найденной статьи с индексом [%d] отсутствует заданное для поиска значение '%s'.\n", i , searchValue),
+              String.format("\n  Ошибка! В заголовке найденной статьи с индексом [%d] отсутствует заданное для поиска значение '%s'.\n", i, searchValue),
               articleTitle.contains(searchValue.toLowerCase()));
     }
+  }
+
+  @Test
+  public void testSearchArticleWithTitleAndDescription() {
+    Map<String, String> searchResults = new HashMap<>();
+    searchResults.put("Java", "Island of Indonesia");
+    searchResults.put("JavaScript", "Programming language");
+    searchResults.put("Java (programming language)", "Object-oriented programming language");
+
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Java");
+
+    int amountOfSearchResults = searchPageObject.getAmountOfFoundArticles();
+
+    assertTrue(
+            String.format("\n  Ошибка! Найдено меньше статей, чем ожидалось: %d.\n", amountOfSearchResults),
+            amountOfSearchResults >= 3);
+
+    searchResults.forEach(searchPageObject::waitForElementByTitleAndDescription);
   }
 }
