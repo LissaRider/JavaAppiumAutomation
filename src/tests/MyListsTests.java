@@ -19,12 +19,65 @@ public class MyListsTests extends CoreTestCase {
     articlePageObject.waitForTitleElement();
     String articleTitle = articlePageObject.getArticleTitle();
     String folderName = "Learning programming";
-    articlePageObject.addArticleToMyList(folderName);
+    articlePageObject.addArticleToNewList(folderName);
     articlePageObject.closeArticle();
     NavigationUI navigationUI = new NavigationUI(driver);
     navigationUI.clickMyLists();
     MyListsPageObject myListsPageObject = new MyListsPageObject(driver);
     myListsPageObject.openFolderByName(folderName);
     myListsPageObject.swipeByArticleToDelete(articleTitle);
+  }
+
+  @Test
+  public void testActionsWithArticlesInMyList() {
+    String searchLine;
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchLine = "World of Tanks";
+    searchPageObject.typeSearchLine(searchLine);
+    searchPageObject.waitForNotEmptySearchResults();
+    searchPageObject.clickByArticleWithTitle(searchLine);
+    ArticlePageObject articlePageObject = new ArticlePageObject(driver);
+    articlePageObject.waitForTitleElement();
+    String articleAboutWotTitle = articlePageObject.getArticleTitle();
+    String folderName = "Games";
+    articlePageObject.addArticleToNewList(folderName);
+    searchPageObject.initSearchInput();
+    searchLine = "World of Warcraft";
+    searchPageObject.typeSearchLine(searchLine);
+    searchPageObject.waitForNotEmptySearchResults();
+    searchPageObject.clickByArticleWithTitle(searchLine);
+    articlePageObject.waitForTitleElement();
+    String articleAboutWowTitle = articlePageObject.getArticleTitle();
+    articlePageObject.addArticleToExistingList(folderName);
+    articlePageObject.closeArticle();
+    NavigationUI navigationUI = new NavigationUI(driver);
+    navigationUI.clickMyLists();
+    MyListsPageObject myListsPageObject = new MyListsPageObject(driver);
+    myListsPageObject.openFolderByName(folderName);
+    int amountOfArticlesBefore = myListsPageObject.getAmountOfAddedArticles();
+
+    assertEquals(
+            String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
+            amountOfArticlesBefore,
+            2);
+
+    myListsPageObject.swipeByArticleToDelete(articleAboutWowTitle);
+    int amountOfArticlesAfter = myListsPageObject.getAmountOfAddedArticles();
+
+    assertEquals(
+            String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
+            amountOfArticlesBefore - 1,
+            amountOfArticlesAfter
+    );
+
+    myListsPageObject.clickByArticleWithTitle(articleAboutWotTitle);
+    articlePageObject.waitForTitleElement();
+    String actualTitle = articlePageObject.getArticleTitle();
+
+    assertEquals(
+            "\n  Ошибка! Отображается некорректное название статьи.\n",
+            articleAboutWotTitle,
+            actualTitle);
   }
 }

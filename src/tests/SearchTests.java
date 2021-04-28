@@ -3,6 +3,9 @@ package tests;
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
 import org.junit.Test;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class SearchTests extends CoreTestCase {
 
@@ -42,5 +45,37 @@ public class SearchTests extends CoreTestCase {
     searchPageObject.typeSearchLine(searchLine);
     searchPageObject.waitForEmptyResultsLabel();
     searchPageObject.assertThereIsNoResultOfSearch();
+  }
+
+  @Test
+  public void testSearchPlaceholder() {
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchPageObject.assertSearchPlaceholderHasText("Search…");
+  }
+
+  @Test
+  public void testSearchAndClear() {
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Java");
+    searchPageObject.waitForNumberOfResultsMoreThan(1);
+    searchPageObject.clearSearchInput();
+  }
+
+  @Test
+  public void testSearchResults() {
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    final String searchValue = "JAVA";
+    searchPageObject.typeSearchLine(searchValue);
+    List<WebElement> articleTitles = searchPageObject.getSearchResultsList();
+
+    for (int i = 0; i < articleTitles.size(); i++) {
+      String articleTitle = articleTitles.get(i).getAttribute("text").toLowerCase();
+      assertTrue(
+              String.format("\n  Ошибка! В заголовке найденной статьи с индексом [%d] отсутствует заданное для поиска значение '%s'.\n", i , searchValue),
+              articleTitle.contains(searchValue.toLowerCase()));
+    }
   }
 }
