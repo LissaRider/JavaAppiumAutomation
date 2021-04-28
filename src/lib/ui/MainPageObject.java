@@ -23,7 +23,7 @@ public class MainPageObject {
     try {
       return getAmountOfElements(by) > 0;
     } catch (Exception e) {
-      String defaultMessage = String.format("\n  Внимание! Элемент c локатором '%s' должен присутствовать.\n  ", by);
+      String defaultMessage = String.format("\n  Ошибка! Элемент c локатором '%s' должен присутствовать.\n  ", by);
       throw new AssertionError(defaultMessage + errorMessage);
     }
   }
@@ -155,7 +155,7 @@ public class MainPageObject {
   public void assertElementNotPresent(By by, String errorMessage) {
     int amountOfSearchResults = getAmountOfElements(by);
     if (amountOfSearchResults > 0) {
-      String defaultMessage = String.format("\n  Внимание! Элемент c локатором '%s' должен отсутствовать.\n  ", by);
+      String defaultMessage = String.format("\n  Ошибка! Элемент c локатором '%s' должен отсутствовать.\n  ", by);
       throw new AssertionError(defaultMessage + errorMessage);
     }
   }

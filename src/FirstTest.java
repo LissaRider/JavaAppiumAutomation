@@ -3,7 +3,6 @@ import lib.ui.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -108,7 +107,7 @@ public class FirstTest extends CoreTestCase {
     String articleTitle = articlePageObject.getArticleTitle();
 
     Assert.assertEquals(
-            "\n Внимание! Отображается некорректный заголовок статьи.",
+            "\n  Ошибка! Отображается некорректный заголовок статьи.\n",
             "Java (programming language)",
             articleTitle
     );
@@ -120,7 +119,6 @@ public class FirstTest extends CoreTestCase {
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Appium");
     searchPageObject.clickByArticleWithSubstring("Appium");
-
     ArticlePageObject articlePageObject = new ArticlePageObject(driver);
     articlePageObject.waitForTitleElement();
     articlePageObject.swipeToFooter();
@@ -167,17 +165,14 @@ public class FirstTest extends CoreTestCase {
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
     searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
-
     ArticlePageObject articlePageObject = new ArticlePageObject(driver);
     articlePageObject.waitForTitleElement();
     String articleTitle = articlePageObject.getArticleTitle();
     String folderName = "Learning programming";
     articlePageObject.addArticleToMyList(folderName);
     articlePageObject.closeArticle();
-
     NavigationUI navigationUI = new NavigationUI(driver);
     navigationUI.clickMyLists();
-
     MyListsPageObject myListsPageObject = new MyListsPageObject(driver);
     myListsPageObject.openFolderByName(folderName);
     myListsPageObject.swipeByArticleToDelete(articleTitle);
@@ -191,8 +186,7 @@ public class FirstTest extends CoreTestCase {
     searchPageObject.typeSearchLine(searchLine);
     int amountOfSearchResults = searchPageObject.getAmountOfFoundArticles();
 
-    Assert.assertTrue("Найдено меньше результатов, чем ожидалось.",
-            amountOfSearchResults > 1);
+    Assert.assertTrue("\n  Ошибка! Найдено меньше результатов, чем ожидалось.\n", amountOfSearchResults > 1);
   }
 
   @Test
@@ -207,62 +201,26 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testChangeScreenOrientationOnSearchResults() {
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
-
-    String searchLine = "Java";
-
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            searchLine,
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
-                    "//*[@text='Object-oriented programming language']"),
-            String.format("Внимание! По запросу поиска '%s' текст 'Object-oriented programming language' не найден.", searchLine),
-            15
-    );
-
-    String titleBeforeRotation = mainPageObject.waitForElementAndGetAttribute(
-            By.id("org.wikipedia:id/view_page_title_text"),
-            "text",
-            "Внимание! Название статьи не найдено.",
-            15
-    );
-
-    driver.rotate(ScreenOrientation.LANDSCAPE);
-
-    String titleAfterRotation = mainPageObject.waitForElementAndGetAttribute(
-            By.id("org.wikipedia:id/view_page_title_text"),
-            "text",
-            "Внимание! Название статьи не найдено.",
-            15
-    );
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Java");
+    searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+    ArticlePageObject articlePageObject = new ArticlePageObject(driver);
+    String titleBeforeRotation = articlePageObject.getArticleTitle();
+    this.rotateScreenLandscape();
+    String titleAfterRotation = articlePageObject.getArticleTitle();
 
     Assert.assertEquals(
-            "\n  Внимание! Название статьи изменилось после изменения ориентации экрана.\n",
+            "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
             titleBeforeRotation,
             titleAfterRotation
     );
 
-    driver.rotate(ScreenOrientation.PORTRAIT);
-
-    String titleAfterSecondRotation = mainPageObject.waitForElementAndGetAttribute(
-            By.id("org.wikipedia:id/view_page_title_text"),
-            "text",
-            "Внимание! Название статьи не найдено.",
-            15
-    );
+    this.rotateScreenPortrait();
+    String titleAfterSecondRotation = articlePageObject.getArticleTitle();
 
     Assert.assertEquals(
-            "\n  Внимание! Название статьи изменилось после изменения ориентации экрана.\n",
+            "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
             titleBeforeRotation,
             titleAfterSecondRotation
     );
@@ -270,35 +228,12 @@ public class FirstTest extends CoreTestCase {
 
   @Test
   public void testCheckSearchArticleInBackground() {
-
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
-
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            "Java",
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
-
-    mainPageObject.waitForElementPresent(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
-                    "//*[@text='Object-oriented programming language']"),
-            "Внимание! Текст 'Object-oriented programming language' не найден.",
-            5
-    );
-
-    driver.runAppInBackground(2);
-
-    mainPageObject.waitForElementPresent(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
-                    "//*[@text='Object-oriented programming language']"),
-            "Внимание! После сворачивания/разворачивания приложения текст 'Object-oriented programming language' не найден.",
-            5
-    );
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Java");
+    searchPageObject.waitForSearchResult("Object-oriented programming language");
+    this.backgroundApp(2);
+    searchPageObject.waitForSearchResult("Object-oriented programming language");
   }
 
   @Test
@@ -347,7 +282,7 @@ public class FirstTest extends CoreTestCase {
     int amountOfArticlesBefore = mainPageObject.getAmountOfElements(searchResultLocator);
 
     Assert.assertEquals(
-            String.format("\nВнимание! В папке '%s' отображается некорректное количество статей.", folderName),
+            String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
             amountOfArticlesBefore,
             2);
 
@@ -365,7 +300,7 @@ public class FirstTest extends CoreTestCase {
     int amountOfArticlesAfter = mainPageObject.getAmountOfElements(searchResultLocator);
 
     Assert.assertEquals(
-            String.format("\nВнимание! В папке '%s' отображается некорректное количество статей.", folderName),
+            String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
             amountOfArticlesBefore - 1,
             amountOfArticlesAfter
     );
@@ -385,7 +320,7 @@ public class FirstTest extends CoreTestCase {
     );
 
     Assert.assertEquals(
-            "\nВнимание! Отображается некорректное название статьи.",
+            "\n  Ошибка! Отображается некорректное название статьи.\n",
             searchWotLine,
             actualTitle
     );

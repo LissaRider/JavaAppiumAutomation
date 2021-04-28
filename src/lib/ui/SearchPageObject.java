@@ -66,6 +66,6 @@ public class SearchPageObject extends MainPageObject {
   }
 
   public void assertThereIsNoResultOfSearch() {
-    this.assertElementNotPresent(By.xpath(SEARCH_RESULT_ELEMENT), "Ошибка! Найдены результаты по запросу поиска.");
+    this.assertElementNotPresent(By.xpath(SEARCH_RESULT_ELEMENT), "Найдены результаты по запросу поиска.");
   }
 }

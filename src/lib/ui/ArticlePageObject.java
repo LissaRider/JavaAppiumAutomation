@@ -39,7 +39,7 @@ public class ArticlePageObject extends MainPageObject {
     this.waitForElementVisible(By.xpath(OPTIONS_MENU), "Внимание! Контекстное меню не найдено.", 15);
     this.waitForElementAndClick(By.xpath(OPTION_ADD_TO_MY_LIST_BUTTON), "Внимание! Элемент добавления статьи в список не найден.", 5);
     this.waitForElementAndClick(By.id(ADD_TO_MY_LIST_OVERLAY), "Внимание! Кнопка 'GOT IT' не найдена.", 5);
-    this.waitForElementAndClear(By.id(NEW_LIST_NAME_INPUT), "Поле ввода имени папки для добавления статьи не найдено.", 5);
+    this.waitForElementAndClear(By.id(NEW_LIST_NAME_INPUT), "Внимание! Поле ввода имени папки для добавления статьи не найдено.", 5);
     this.waitForElementAndSendKeys(By.id(NEW_LIST_NAME_INPUT), folderName, "Внимание! Невозможно ввести текст в поле ввода имени папки для добавления статьи.", 5);
     this.waitForElementAndClick(By.xpath(NEW_LIST_CREATION_OK_BUTTON), "Внимание! Невозможно нажать на кнопку 'OK'.", 5);
   }
