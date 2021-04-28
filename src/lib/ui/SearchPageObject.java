@@ -47,4 +47,9 @@ public class SearchPageObject extends MainPageObject {
     String searchResultXpath = getResultSearchElement(substring);
     this.waitForElementPresent(By.xpath(searchResultXpath), String.format("Внимание! Текст '%s' не найден.", substring), 15);
   }
+
+  public void clickByArticleWithSubstring(String substring) {
+    String searchResultXpath = getResultSearchElement(substring);
+    this.waitForElementAndClick(By.xpath(searchResultXpath), String.format("Внимание! Текст '%s' не найден или элемент недоступен для действий.", substring), 10);
+  }
 }

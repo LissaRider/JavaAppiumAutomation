@@ -1,4 +1,5 @@
 import lib.CoreTestCase;
+import lib.ui.ArticlePageObject;
 import lib.ui.MainPageObject;
 import lib.ui.SearchPageObject;
 import org.junit.Assert;
@@ -80,7 +81,7 @@ public class FirstTest extends CoreTestCase {
     );
 
     // ждем отображения списка с количеством статей больше 1 (несколько статей)
-    mainPageObject. waitForNumberOfElementsToBeMoreThan(
+    mainPageObject.waitForNumberOfElementsToBeMoreThan(
             By.id("org.wikipedia:id/page_list_item_container"),
             1,
             "Внимание! Не найдено ни одной статьи или найдено статей меньше ожидаемого количества.",
@@ -105,33 +106,16 @@ public class FirstTest extends CoreTestCase {
   @Test
   public void testCompareArticleTitle() {
 
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
 
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            "Java",
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Java");
+    searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']" +
-                    "//*[@text='Object-oriented programming language']"),
-            "Внимание! Текст 'Object-oriented programming language' не найден.",
-            5
-    );
+    ArticlePageObject articlePageObject = new ArticlePageObject(driver);
 
-    WebElement titleElement = mainPageObject.waitForElementPresent(
-            By.id("org.wikipedia:id/view_page_title_text"),
-            "Внимание! Заголовок статьи не найден.",
-            15
-    );
+    String articleTitle = articlePageObject.getArticleTitle();
 
-    String articleTitle = titleElement.getAttribute("text");
 
     Assert.assertEquals(
             "\n Внимание! Отображается некорректный заголовок статьи.",
@@ -143,36 +127,16 @@ public class FirstTest extends CoreTestCase {
   @Test
   public void testSwipeArticle() {
 
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[contains(@text,'Search Wikipedia')]"),
-            "Внимание! Элемент 'Search Wikipedia' не найден.",
-            5
-    );
+    SearchPageObject searchPageObject = new SearchPageObject(driver);
 
-    mainPageObject.waitForElementAndSendKeys(
-            By.xpath("//*[contains(@text,'Search…')]"),
-            "Appium",
-            "Внимание! Поле ввода текста для поиска не найдено.",
-            5
-    );
+    searchPageObject.initSearchInput();
+    searchPageObject.typeSearchLine("Appium");
+    searchPageObject.clickByArticleWithSubstring("Appium");
 
-    mainPageObject.waitForElementAndClick(
-            By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='Appium']"),
-            "Внимание! Статья с заголовком 'Appium' не найдена.",
-            5
-    );
+    ArticlePageObject articlePageObject = new ArticlePageObject(driver);
 
-    mainPageObject.waitForElementPresent(
-            By.id("org.wikipedia:id/view_page_title_text"),
-            "Внимание! Заголовок статьи не найден.",
-            15
-    );
-
-    mainPageObject.swipeUpToFindElement(
-            By.xpath(".//*[@text='View page in browser']"),
-            "  Конец статьи не найден.",
-            20
-    );
+    articlePageObject.waitForTitleElement();
+    articlePageObject.swipeToFooter();
   }
 
   @Test
