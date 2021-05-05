@@ -10,12 +10,12 @@ _./libs_
 
 #### Описание и версии
 
-| groupId                 | artifactId      | version | description                                    | homepage                                                               |
-|:------------------------|:----------------|:-------:|:-----------------------------------------------|:-----------------------------------------------------------------------|
-| io.appium               | java-client     | 4.1.2   | Java client for Appium Mobile Webdriver        | [appium/java-client](https://github.com/appium/java-client)            |
-| org.seleniumhq.selenium | selenium-server | 3.4.0   | Selenium Server to run Remote WebDriver (Grid) | [selenium/download-documentation](https://www.selenium.dev/downloads/) |
-| junit                   | junit           | 4.12    | Unit testing framework for Java                | [junit-team/junit4](https://junit.org/junit4/)                         |
-
+| groupId                 | artifactId          | version | description                                    | homepage                                                               |
+|:------------------------|:--------------------|:-------:|:-----------------------------------------------|:-----------------------------------------------------------------------|
+| io.appium               | java-client         | 6.1.0   | Java client for Appium Mobile Webdriver        | [appium/java-client](https://github.com/appium/java-client)            |
+| org.seleniumhq.selenium | selenium-server     | 3.14.0  | Selenium Server to run Remote WebDriver (Grid) | [selenium/download-documentation](https://www.selenium.dev/downloads/) |
+| junit                   | junit               | 4.12    | Unit testing framework for Java                | [junit-team/junit4](https://junit.org/junit4/)                         |
+| javax.websocket         | javax.websocket-api | 1.1     | Java API for WebSocket                         | [javaee/websocket-spec](https://github.com/javaee/websocket-spec)      | 
 ## Приложения для тестирования
 
 #### Расположение (*.apk)
