@@ -38,7 +38,7 @@ public class SearchTests extends CoreTestCase {
 
     assertTrue(
             String.format("\n  Ошибка! Найдено меньше результатов, чем ожидалось: %d.\n",amountOfSearchResults),
-            amountOfSearchResults > 1);
+            amountOfSearchResults >= 1);
   }
 
   @Test
