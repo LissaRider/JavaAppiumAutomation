@@ -2,6 +2,7 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
+import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -13,7 +14,7 @@ public class SearchTests extends CoreTestCase {
 
   @Test
   public void testSearch() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
     searchPageObject.waitForSearchResult("Object-oriented programming language");
@@ -21,7 +22,7 @@ public class SearchTests extends CoreTestCase {
 
   @Test
   public void testCancelSearch() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     searchPageObject.waitForCancelButtonToAppear();
     searchPageObject.clickCancelButton();
@@ -30,7 +31,7 @@ public class SearchTests extends CoreTestCase {
 
   @Test
   public void testAmountOfNotEmptySearch() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     String searchLine = "Linkin Park Discography";
     searchPageObject.typeSearchLine(searchLine);
@@ -43,7 +44,7 @@ public class SearchTests extends CoreTestCase {
 
   @Test
   public void testAmountOfEmptySearch() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     String searchLine = "TIJIIOLLIKA";
     searchPageObject.typeSearchLine(searchLine);
@@ -53,14 +54,14 @@ public class SearchTests extends CoreTestCase {
 
   @Test
   public void testSearchPlaceholder() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     searchPageObject.assertSearchPlaceholderHasText("Search…");
   }
 
   @Test
   public void testSearchAndClear() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
     searchPageObject.waitForNumberOfResultsMoreThan(1);
@@ -69,7 +70,7 @@ public class SearchTests extends CoreTestCase {
 
   @Test
   public void testSearchResults() {
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     final String searchValue = "JAVA";
     searchPageObject.typeSearchLine(searchValue);
@@ -90,7 +91,7 @@ public class SearchTests extends CoreTestCase {
     searchResults.put("JavaScript", "Programming language");
     searchResults.put("Java (programming language)", "Object-oriented programming language");
 
-    SearchPageObject searchPageObject = new SearchPageObject(driver);
+    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
     searchPageObject.initSearchInput();
     searchPageObject.typeSearchLine("Java");
 

@@ -9,7 +9,8 @@ public class WelcomePageObject extends MainPageObject {
             ADD_OR_EDIT_PREFERRED_LANG_LINK = "id:Add or edit preferred languages",
             LEARN_MORE_ABOUT_DATA_COLLECTED_LINK = "id:Learn more about data collected",
             NEXT_LINK = "id:Next",
-            GET_STARTED_BUTTON = "id:Get started";
+            GET_STARTED_BUTTON = "id:Get started",
+            SKIP = "id:Skip";
 
     public WelcomePageObject(AppiumDriver driver) {
         super(driver);
@@ -37,5 +38,9 @@ public class WelcomePageObject extends MainPageObject {
 
     public void clickGetStartedButton() {
         this.waitForElementClickableAndClick(GET_STARTED_BUTTON, "Кнопка 'Get started' не найдена или недоступна для действий.", 10);
+    }
+
+    public void clickSkip() {
+        this.waitForElementClickableAndClick(SKIP, "Кнопка 'Skip' не найдена или недоступна для действий.", 5);
     }
 }
