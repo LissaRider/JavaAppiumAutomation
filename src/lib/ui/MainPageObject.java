@@ -16,9 +16,10 @@ import java.time.Duration;
 import java.util.List;
 
 public class MainPageObject {
-  protected AppiumDriver<?> driver;
 
-  public MainPageObject(AppiumDriver<?> driver) {
+  protected AppiumDriver driver;
+
+  public MainPageObject(AppiumDriver driver) {
     this.driver = driver;
   }
 
@@ -101,7 +102,7 @@ public class MainPageObject {
   }
 
   public void swipeUp(int timeOfSwipe) {
-    TouchAction<?> action = new TouchAction<>(driver);
+    TouchAction action = new TouchAction(driver);
     Dimension size = driver.manage().window().getSize();
     int x = size.width / 2;
     int startY = (int) (size.height * 0.8);
@@ -140,7 +141,7 @@ public class MainPageObject {
     int lowerY = upperY + element.getSize().getHeight();
     int middleY = (upperY + lowerY) / 2;
 
-    TouchAction<?> action = new TouchAction<>(driver);
+    TouchAction action = new TouchAction(driver);
     action
             .press(PointOption.point(rightX, middleY))
             .waitAction(WaitOptions.waitOptions(Duration.ofMillis(300)))
@@ -150,7 +151,7 @@ public class MainPageObject {
   }
 
   public int getAmountOfElements(By by) {
-    List<?> elements = driver.findElements(by);
+    List elements = driver.findElements(by);
     return elements.size();
   }
 

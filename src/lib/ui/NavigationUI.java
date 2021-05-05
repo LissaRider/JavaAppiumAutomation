@@ -10,7 +10,7 @@ public class NavigationUI extends MainPageObject {
           READING_LISTS_LINK = "//android.widget.FrameLayout[@content-desc='My lists']",
           MY_LISTS_PAGE_TITLE = "//*[@resource-id='org.wikipedia:id/single_fragment_toolbar']/*[@text='My lists']";
 
-  public NavigationUI(AppiumDriver<?> driver) {
+  public NavigationUI(AppiumDriver driver) {
     super(driver);
   }
 

@@ -24,7 +24,7 @@ public class SearchPageObject extends MainPageObject {
                   "[.//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{ARTICLE_TITLE}']]" +
                   "[.//*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{ARTICLE_DESCRIPTION}']]";
 
-  public SearchPageObject(AppiumDriver<?> driver) {
+  public SearchPageObject(AppiumDriver driver) {
     super(driver);
   }
 

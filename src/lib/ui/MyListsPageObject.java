@@ -11,7 +11,7 @@ public class MyListsPageObject extends MainPageObject {
           ARTICLE_LIST_ELEMENT = "org.wikipedia:id/page_list_item_container",
           ARTICLE_BY_TITLE_TFL = "//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']";
 
-  public MyListsPageObject(AppiumDriver<?> driver) {
+  public MyListsPageObject(AppiumDriver driver) {
     super(driver);
   }
 

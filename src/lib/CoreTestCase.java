@@ -1,5 +1,6 @@
 package lib;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import junit.framework.TestCase;
 import org.openqa.selenium.ScreenOrientation;
@@ -11,7 +12,7 @@ import java.time.Duration;
 
 public class CoreTestCase extends TestCase {
 
-  protected AndroidDriver<?> driver;
+  protected AppiumDriver driver;
   private static final String appiumURL = "http://127.0.0.1:4723/wd/hub";
 
   @Override
@@ -27,14 +28,10 @@ public class CoreTestCase extends TestCase {
     capabilities.setCapability("appActivity", ".main.MainActivity");
     capabilities.setCapability("orientation", "PORTRAIT");
 
-    String oldWikiPath = "./apks/org.wikipedia.old.apk";
+    String oldWikiPath = "./apks/org.wikipedia.apk";
     capabilities.setCapability("app", new File(oldWikiPath).getCanonicalPath());
-/*        String stableWikiPath = "./apks/org.wikipedia.stable.apk";
-        capabilities.setCapability("app", new File(stableWikiPath).getCanonicalPath());*/
-/*        String betaWikiPath = "./apks/org.wikipedia.beta.apk";
-        capabilities.setCapability("app", new File(betaWikiPath).getCanonicalPath());*/
 
-    driver = new AndroidDriver<>(new URL(appiumURL), capabilities);
+    driver = new AndroidDriver(new URL(appiumURL), capabilities);
   }
 
   @Override

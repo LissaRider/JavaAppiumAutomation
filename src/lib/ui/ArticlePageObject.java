@@ -22,7 +22,7 @@ public class ArticlePageObject extends MainPageObject {
           ADD_TO_LIST_INIT_FORM = "org.wikipedia:id/design_bottom_sheet",
           READING_LIST_ELEMENT_TPL = "//*[@resource-id='org.wikipedia:id/item_title'][@text='{FOLDER}']";
 
-  public ArticlePageObject(AppiumDriver<?> driver) {
+  public ArticlePageObject(AppiumDriver driver) {
     super(driver);
   }
 

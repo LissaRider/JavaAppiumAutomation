@@ -24,11 +24,10 @@ _./apks_
 
 #### Описание и версии
 
-| name                 | version | description                                 | homepage                                                                                       |
-|:---------------------|:-------:|:--------------------------------------------|:-----------------------------------------------------------------------------------------------|
-| org.wikipedia.stable | 50348   | Actual stable version up to date 04/01/2021 | [wikipedia](https://play.google.com/store/apps/details?id=org.wikipedia&hl=ru&gl=US)           |
-| org.wikipedia.beta   | 50349   | Actual beta version up to date 04/01/2021   | [wikipedia-beta](https://play.google.com/store/apps/details?id=org.wikipedia.beta&hl=ru&gl=US) |
-| org.wikipedia.old    | unknown | Old version up to date 02/18/2018           | none                                                                                           |
+| name                 | version | description                                   | homepage                                                                             |
+|:---------------------|:-------:|:----------------------------------------------|:-------------------------------------------------------------------------------------|
+| org.wikipedia.apk    | unknown | Old version up to date 02/18/2018             | [wikipedia](https://play.google.com/store/apps/details?id=org.wikipedia&hl=ru&gl=US) |
+| Wikipedia.app        | unknown | Actual official version up to date 05/05/2021 | [wikipedia-ios](https://github.com/wikimedia/wikipedia-ios)                          |
 
 ## Лицензия
 
