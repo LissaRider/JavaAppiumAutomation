@@ -8,17 +8,16 @@ import java.util.List;
 abstract public class SearchPageObject extends MainPageObject {
 
     protected static String
-            MAIN_PAGE_SEARCH_INIT_ELEMENT,
-            MENU_PAGE_SEARCH_INIT_ELEMENT,
-            SEARCH_INPUT,
-            SEARCH_CANCEL_BUTTON,
-            SEARCH_RESULT_BY_SUBSTRING_TPL,
-            SEARCH_RESULT_TITLE,
-            SEARCH_RESULT_BY_TITLE_TPL,
-            SEARCH_RESULT_LIST_ITEM,
-            SEARCH_RESULT_LIST,
-            SEARCH_EMPTY_RESULT_ELEMENT,
-            SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL;
+            MAIN_PAGE_SEARCH_INIT_ELEMENT, /* INIT ELEMENT: элемент на главной странице для перехода на форму поиска */
+            SEARCH_INPUT_FIELD, /* INPUT FIELD: поле ввода значения для поиска */
+            SEARCH_CANCEL_BUTTON, /* BUTTON: кнопка для очистки поля ввода или закрытия формы поиска */
+            SEARCH_EMPTY_RESULT_ELEMENT,/* SEARCH RESULT: форма, отображающаяся, если по заданному запросу ничего не найдено */
+            SEARCH_RESULT_LIST, /* SEARCH RESULT: список всех найденных результатов */
+            SEARCH_RESULT_LIST_ITEM, /* SEARCH RESULT: элемент списка с результатом поиска */
+            SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL, /* SEARCH RESULT: элемент списка с результатом поиска с указанием текста в нем */
+            SEARCH_RESULT_LIST_ITEM_TITLE,  /* SEARCH RESULT: заголовок статьи в элементе списка */
+            SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL, /* SEARCH RESULT: заголовок статьи в элементе списка с указанием текста в нем*/
+            SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL; /* SEARCH RESULT: элемент списка с результатом поиска с указанием заголовка и описания в нем*/
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -26,15 +25,15 @@ abstract public class SearchPageObject extends MainPageObject {
 
     //region TEMPLATES METHODS
     private static String getResultSearchElementWithSubstring(String substring) {
-        return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+        return SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
 
     private static String getResultSearchElementWithTitle(String articleTitle) {
-        return SEARCH_RESULT_BY_TITLE_TPL.replace("{TITLE}", articleTitle);
+        return SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL.replace("{TITLE}", articleTitle);
     }
 
     private static String getArticleWithTitleAndDescription(String articleTitle, String articleDescription) {
-        return SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL
+        return SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL
                 .replace("{ARTICLE_TITLE}", articleTitle)
                 .replace("{ARTICLE_DESCRIPTION}", articleDescription);
     }
@@ -54,8 +53,8 @@ abstract public class SearchPageObject extends MainPageObject {
         if (this.isElementPresent(MAIN_PAGE_SEARCH_INIT_ELEMENT))
             this.waitForElementClickableAndClick(MAIN_PAGE_SEARCH_INIT_ELEMENT, String.format("На главной странице %s.", searchWikiMessageError), 5);
         else
-            this.waitForElementClickableAndClick(MENU_PAGE_SEARCH_INIT_ELEMENT, String.format("На странице статьи %s.", searchWikiMessageError), 5);
-        this.waitForElementPresent(SEARCH_INPUT, "Поле ввода текста для поиска не найдено.");
+            this.waitForElementClickableAndClick(ArticlePageObject.ARTICLE_SEARCH_INIT_ELEMENT, String.format("На странице статьи %s.", searchWikiMessageError), 5);
+        this.waitForElementPresent(SEARCH_INPUT_FIELD, "Поле ввода текста для поиска не найдено.");
     }
 
     public void waitForCancelButtonToAppear() {
@@ -67,12 +66,12 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void clearSearchInput() {
-        this.waitForElementAndClear(SEARCH_INPUT, "Поле ввода текста для поиска не найдено.", 5);
+        this.waitForElementAndClear(SEARCH_INPUT_FIELD, "Поле ввода текста для поиска не найдено.", 5);
         this.waitForElementNotPresent(SEARCH_RESULT_LIST, "Список результатов все ещё отображается.", 15);
     }
 
     public List<WebElement> getSearchResultsList() {
-        return this.waitForPresenceOfAllElements(SEARCH_RESULT_TITLE, "По заданному запросу ничего не найдено.", 15);
+        return this.waitForPresenceOfAllElements(SEARCH_RESULT_LIST_ITEM_TITLE, "По заданному запросу ничего не найдено.", 15);
     }
 
     public void clickCancelButton() {
@@ -80,7 +79,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void typeSearchLine(String substring) {
-        this.waitForElementAndSendKeys(SEARCH_INPUT, substring, "Поле ввода текста для поиска не найдено.", 5);
+        this.waitForElementAndSendKeys(SEARCH_INPUT_FIELD, substring, "Поле ввода текста для поиска не найдено.", 5);
     }
 
     public void waitForSearchResult(String substring) {
@@ -120,6 +119,6 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void assertSearchPlaceholderHasText(String placeholder) {
-        this.assertElementHasText(SEARCH_INPUT, placeholder, "Поле ввода для поиска статьи содержит некорректный текст.");
+        this.assertElementHasText(SEARCH_INPUT_FIELD, placeholder, "Поле ввода для поиска статьи содержит некорректный текст.");
     }
 }

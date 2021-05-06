@@ -2,12 +2,12 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 
-public class NavigationUI extends MainPageObject {
+abstract public class NavigationUI extends MainPageObject {
 
-    private static final String
-            MAIN_NAV_TAB_ELEMENT = "id:org.wikipedia:id/fragment_main_nav_tab_layout",
-            READING_LISTS_LINK = "xpath://android.widget.FrameLayout[@content-desc='My lists']",
-            MY_LISTS_PAGE_TITLE = "xpath://*[@resource-id='org.wikipedia:id/single_fragment_toolbar']/*[@text='My lists']";
+    protected static String
+            MAIN_NAV_TAB_ELEMENT,
+            READING_LISTS_LINK,
+            MY_LISTS_PAGE_TITLE;
 
     public NavigationUI(AppiumDriver driver) {
         super(driver);

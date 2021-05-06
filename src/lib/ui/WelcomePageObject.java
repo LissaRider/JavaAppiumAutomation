@@ -4,13 +4,14 @@ import io.appium.java_client.AppiumDriver;
 
 public class WelcomePageObject extends MainPageObject {
 
-    public static final String LEARN_MORE_ABOUT_WIKIPEDIA_LINK = "id:Learn more about Wikipedia",
+    public static final String
+            LEARN_MORE_ABOUT_WIKIPEDIA_LINK = "id:Learn more about Wikipedia",
             NEW_WAYS_TO_EXPLORE_TEXT = "id:New ways to explore",
             ADD_OR_EDIT_PREFERRED_LANG_LINK = "id:Add or edit preferred languages",
             LEARN_MORE_ABOUT_DATA_COLLECTED_LINK = "id:Learn more about data collected",
-            NEXT_LINK = "id:Next",
+            NEXT_BUTTON = "id:Next",
             GET_STARTED_BUTTON = "id:Get started",
-            SKIP = "id:Skip";
+            SKIP_BUTTON = "id:Skip";
 
     public WelcomePageObject(AppiumDriver driver) {
         super(driver);
@@ -33,7 +34,7 @@ public class WelcomePageObject extends MainPageObject {
     }
 
     public void clickNextButton() {
-        this.waitForElementClickableAndClick(NEXT_LINK, "Кнопка 'Next' не найдена или недоступна для действий.", 10);
+        this.waitForElementClickableAndClick(NEXT_BUTTON, "Кнопка 'Next' не найдена или недоступна для действий.", 10);
     }
 
     public void clickGetStartedButton() {
@@ -41,6 +42,6 @@ public class WelcomePageObject extends MainPageObject {
     }
 
     public void clickSkip() {
-        this.waitForElementClickableAndClick(SKIP, "Кнопка 'Skip' не найдена или недоступна для действий.", 5);
+        this.waitForElementClickableAndClick(SKIP_BUTTON, "Кнопка 'Skip' не найдена или недоступна для действий.", 5);
     }
 }

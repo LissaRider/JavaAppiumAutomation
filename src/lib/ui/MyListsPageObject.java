@@ -1,14 +1,17 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 
-public class MyListsPageObject extends MainPageObject {
+abstract public class MyListsPageObject extends MainPageObject {
 
-    private static final String
-            LIST_ELEMENT = "id:org.wikipedia:id/item_container",
-            FOLDER_BY_NAME_TFL = "xpath://*[@resource-id='org.wikipedia:id/item_title'][@text='{FOLDER_NAME}']",
-            ARTICLE_LIST_ELEMENT = "id:org.wikipedia:id/page_list_item_container",
-            ARTICLE_BY_TITLE_TFL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']";
+    protected static String
+            LIST_ELEMENT,
+            FOLDER_BY_NAME_TPL,
+            ARTICLE_LIST_ELEMENT,
+            ARTICLE_BY_TITLE_TPL,
+            SYNC_YOUR_SAVED_ARTICLES_POPUP,
+            CLOSE_SYNC_POPUP_BUTTON;
 
     public MyListsPageObject(AppiumDriver driver) {
         super(driver);
@@ -16,11 +19,11 @@ public class MyListsPageObject extends MainPageObject {
 
     //region TEMPLATES METHODS
     private static String getFolderXpathByName(String folderName) {
-        return FOLDER_BY_NAME_TFL.replace("{FOLDER_NAME}", folderName);
+        return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", folderName);
     }
 
     private static String getArticleXpathByTitle(String articleTitle) {
-        return ARTICLE_BY_TITLE_TFL.replace("{TITLE}", articleTitle);
+        return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", articleTitle);
     }
     //endregion
 
@@ -42,10 +45,11 @@ public class MyListsPageObject extends MainPageObject {
     }
 
     public void swipeByArticleToDelete(String articleTitle) {
-//    this.waitForElementVisible(ARTICLE_LIST_ELEMENT, "Ни одной статьи не найдено.", 15);
         this.waitForArticleToAppearByTitle(articleTitle);
         String articleTitleXpath = getArticleXpathByTitle(articleTitle);
         this.swipeElementToLeft(articleTitleXpath, String.format("В списке статья '%s' не найдена.", articleTitle));
+        if (Platform.getInstance().isIOS())
+            this.clickElementToTheRightUpperCorner(articleTitleXpath, "В списке статья не найдена.");
         this.waitForArticleToDisappearByTitle(articleTitle);
     }
 
@@ -57,5 +61,10 @@ public class MyListsPageObject extends MainPageObject {
     public void clickByArticleWithTitle(String articleTitle) {
         String articleTitleXpath = getArticleXpathByTitle(articleTitle);
         this.waitForElementClickableAndClick(articleTitleXpath, String.format("Статья с заголовком '%s' не найдена или недоступна для действий.", articleTitle), 5);
+    }
+
+    public void closeSyncSavedArticlesPopUp() {
+        if (isElementPresent(SYNC_YOUR_SAVED_ARTICLES_POPUP))
+            this.waitForElementClickableAndClick(CLOSE_SYNC_POPUP_BUTTON, "Кнопка 'Close' для закрытия окна 'Sync your saved articles popup?' не найдена или недоступна для действий.", 10);
     }
 }

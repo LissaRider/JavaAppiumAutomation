@@ -5,10 +5,11 @@ import lib.ui.ArticlePageObject;
 
 public class iOSArticlePageObject extends ArticlePageObject {
     static {
-        TITLE = "id:Appium";
-        FOOTER_ELEMENT = "id:View article in browser";
-        OPTIONS_ADD_TO_MY_LIST_BUTTON = "id:Save for later";
-        CLOSE_ARTICLE_BUTTON = "id:Back";
+        ARTICLE_TITLE = "id:Java (programming language)";
+        ARTICLE_SEARCH_INIT_ELEMENT = "xpath://XCUIElementTypeNavigationBar//XCUIElementTypeButton[@name='Search Wikipedia']";
+        ARTICLE_FOOTER_ELEMENT = "id:View article in browser";
+        SAVE_FOR_LATER_BUTTON = "id:Save for later";
+        TAP_TO_GO_BACK_BUTTON = "xpath://XCUIElementTypeButton[@name='W']";
     }
 
     public iOSArticlePageObject(AppiumDriver driver) {

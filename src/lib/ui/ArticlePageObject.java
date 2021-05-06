@@ -7,9 +7,10 @@ import org.openqa.selenium.WebElement;
 abstract public class ArticlePageObject extends MainPageObject {
 
     protected static String
-            TITLE,
-            FOOTER_ELEMENT,
-            PAGE_TOOLBAR,
+            ARTICLE_TITLE,
+            ARTICLE_FOOTER_ELEMENT,
+            ARTICLE_TOP_TOOLBAR,
+            ARTICLE_SEARCH_INIT_ELEMENT, /* INIT ELEMENT: элемент на странице статьи для перехода на форму поиска */
             OPTIONS_BUTTON,
             OPTIONS_MENU,
             OPTION_BY_TITLE_BUTTON_TPL,
@@ -21,7 +22,9 @@ abstract public class ArticlePageObject extends MainPageObject {
             CREATE_NEW_LIST_BUTTON,
             ADD_TO_LIST_INIT_FORM,
             READING_LIST_ELEMENT_TPL,
-            OPTIONS_ADD_TO_MY_LIST_BUTTON;
+            SAVE_FOR_LATER_BUTTON,
+            TAP_TO_GO_BACK_BUTTON,
+            CLOSE_SYNC_POPUP_BUTTON;
 
     public ArticlePageObject(AppiumDriver driver) {
         super(driver);
@@ -29,16 +32,16 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     //region TEMPLATES METHODS
     private static String getOptionByTitle(String optionTitle) {
-        return OPTION_BY_TITLE_BUTTON_TPL.replace("{OPTION}", optionTitle);
+        return OPTION_BY_TITLE_BUTTON_TPL.replace("{MENU_OPTION}", optionTitle);
     }
 
     private static String getFolderByName(String folderName) {
-        return READING_LIST_ELEMENT_TPL.replace("{FOLDER}", folderName);
+        return READING_LIST_ELEMENT_TPL.replace("{FOLDER_NAME}", folderName);
     }
     //endregion
 
     public WebElement waitForTitleElement() {
-        return this.waitForElementPresent(TITLE, "Заголовок статьи не найден.", 15);
+        return this.waitForElementPresent(ARTICLE_TITLE, "Заголовок статьи не найден.", 15);
     }
 
     public String getArticleTitle() {
@@ -52,14 +55,14 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     public void swipeToFooter() {
         if (Platform.getInstance().isAndroid()) {
-            this.swipeUpToFindElement(FOOTER_ELEMENT, "Конец статьи не найден.", 40);
+            this.swipeUpToFindElement(ARTICLE_FOOTER_ELEMENT, "Конец статьи не найден.", 40);
         } else {
-            this.swipeUpTillElementAppear(FOOTER_ELEMENT, "Конец статьи не найден.", 150);
+            this.swipeUpTillElementAppear(ARTICLE_FOOTER_ELEMENT, "Конец статьи не найден.", 150);
         }
     }
 
     public void selectAddToReadingListOption() {
-        this.waitForElementVisible(PAGE_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
+        this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
         this.waitForElementClickableAndClick(OPTIONS_BUTTON, "Кнопка открытия панели действий со статьёй не найдена или недоступна для действий.", 5);
         this.waitForElementVisible(OPTIONS_MENU, "Панель действий со статьёй не найдена.", 15);
         String addToReadingListXpath = getOptionByTitle("Add to reading list");
@@ -86,12 +89,23 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.waitForElementClickableAndClick(folderToAddArticleXpath, String.format("Папка с именем '%s' не найдена или недоступна для действий.", folderName), 5);
     }
 
+    /**
+     * Метод для добавления статьи в список сохраненных на iOS
+     */
+    public void addArticleToSavedList() {
+        this.waitForElementClickableAndClick(SAVE_FOR_LATER_BUTTON, "Кнопка 'Save for later' не найдена или недоступна для действий.", 5);
+    }
+
     public void closeArticle() {
-        this.waitForElementVisible(PAGE_TOOLBAR, "На странице панель инструментов не найдена.", 15);
-        this.waitForElementClickableAndClick(CLOSE_ARTICLE_BUTTON, "Кнопка закрытия статьи не найдена или недоступна для действий.", 5);
+        this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице панель инструментов не найдена.", 15);
+        this.waitForElementAndClick(CLOSE_ARTICLE_BUTTON, "Кнопка закрытия статьи не найдена или недоступна для действий.", 10);
     }
 
     public void assertIsArticleTitlePresent() {
-        this.assertElementPresent(TITLE, "Заголовок статьи не найден.");
+        this.assertElementPresent(ARTICLE_TITLE, "Заголовок статьи не найден.");
+    }
+
+    public void closeArticleAndReturnToMainPage() {
+        this.waitForElementClickableAndClick(TAP_TO_GO_BACK_BUTTON, "Кнопка возврата на главную страницу не найдена или недоступна для действий.", 5);
     }
 }
