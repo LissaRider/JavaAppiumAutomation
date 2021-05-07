@@ -9,43 +9,56 @@ import org.junit.Test;
 
 public class ArticleTests extends CoreTestCase {
 
-  @Test
-  public void testCompareArticleTitle() {
-    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
-    searchPageObject.initSearchInput();
-    searchPageObject.typeSearchLine("Java");
-    searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+    @Test
+    public void testCompareArticleTitle() {
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
 
-    ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
-    String articleTitle = articlePageObject.getArticleTitle();
+        final String searchLine = "Java";
+        searchPage.searchByValue(searchLine);
 
-    assertEquals(
-            "\n  Ошибка! Отображается некорректный заголовок статьи.\n",
-            "Java (programming language)",
-            articleTitle
-    );
-  }
+        final String substring = "Object-oriented programming language";
+        searchPage.clickByArticleWithSubstring(substring);
 
-  @Test
-  public void testSwipeArticle() {
-    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
-    searchPageObject.initSearchInput();
-    searchPageObject.typeSearchLine("Appium");
-    searchPageObject.clickByArticleWithSubstring("Appium");
-    ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
-    articlePageObject.waitForTitleElement();
-    articlePageObject.swipeToFooter();
-  }
+        String articleTitle = articlePage.getArticleTitle();
 
-  @Test
-  public void testArticleTitlePresence() {
-    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
-    searchPageObject.initSearchInput();
-    String searchLine = "Lords Mobile";
-    searchPageObject.typeSearchLine(searchLine);
-    searchPageObject.waitForNotEmptySearchResults();
-    searchPageObject.clickByArticleWithTitle(searchLine);
-    ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
-    articlePageObject.assertIsArticleTitlePresent();
-  }
+        assertEquals(
+                "\n  Ошибка! Отображается некорректный заголовок статьи.\n",
+                "Java (programming language)",
+                articleTitle
+        );
+    }
+
+    @Test
+    public void testSwipeArticle() {
+
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
+
+        final String searchLine = "Appium";
+        searchPage.searchByValue(searchLine);
+
+        final String substring = "Appium";
+        searchPage.clickByArticleWithSubstring(substring);
+
+        articlePage.waitForTitleElement();
+
+        articlePage.swipeToFooter();
+    }
+
+    @Test
+    public void testArticleTitlePresence() {
+
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
+
+        final String searchLine = "Lords Mobile";
+        searchPage.searchByValue(searchLine);
+
+        searchPage.waitForNotEmptySearchResults();
+
+        searchPage.clickByArticleWithTitle(searchLine);
+
+        articlePage.assertIsArticleTitlePresent();
+    }
 }

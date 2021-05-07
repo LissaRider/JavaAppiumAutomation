@@ -6,9 +6,9 @@ import lib.Platform;
 abstract public class MyListsPageObject extends MainPageObject {
 
     protected static String
-            LIST_ELEMENT,
             FOLDER_BY_NAME_TPL,
-            ARTICLE_LIST_ELEMENT,
+            ARTICLE_LIST,
+            ARTICLE_LIST_ITEM,
             ARTICLE_BY_TITLE_TPL,
             SYNC_YOUR_SAVED_ARTICLES_POPUP,
             CLOSE_SYNC_POPUP_BUTTON;
@@ -23,12 +23,12 @@ abstract public class MyListsPageObject extends MainPageObject {
     }
 
     private static String getArticleXpathByTitle(String articleTitle) {
-        return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", articleTitle);
+        return ARTICLE_BY_TITLE_TPL.replace("{ARTICLE_TITLE}", articleTitle);
     }
     //endregion
 
     public void openFolderByName(String folderName) {
-        this.waitForNumberOfElementsToBeMoreThan(LIST_ELEMENT, 0, "В списке 'My lists' ни одной папки не найдено.", 15);
+        this.waitForNumberOfElementsToBeMoreThan(ARTICLE_LIST, 0, "В списке 'My lists' ни одной папки не найдено.", 15);
         String folderNameXpath = getFolderXpathByName(folderName);
         this.waitForElementAndClick(folderNameXpath, String.format("Папка '%s' не найдена или недоступна для действий.", folderName), 5);
         waitForElementVisible(folderNameXpath, String.format("Заголовок папки '%s' не найден.", folderName), 15);
@@ -54,8 +54,8 @@ abstract public class MyListsPageObject extends MainPageObject {
     }
 
     public int getAmountOfAddedArticles() {
-        this.waitForElementPresent(ARTICLE_LIST_ELEMENT, "Ничего не найдено по заданному запросу.", 15);
-        return getAmountOfElements(ARTICLE_LIST_ELEMENT);
+        this.waitForElementPresent(ARTICLE_LIST_ITEM, "Ничего не найдено по заданному запросу.", 15);
+        return getAmountOfElements(ARTICLE_LIST_ITEM);
     }
 
     public void clickByArticleWithTitle(String articleTitle) {
@@ -63,6 +63,9 @@ abstract public class MyListsPageObject extends MainPageObject {
         this.waitForElementClickableAndClick(articleTitleXpath, String.format("Статья с заголовком '%s' не найдена или недоступна для действий.", articleTitle), 5);
     }
 
+    /**
+     * Метод для закрытия всплывающего окна при входе в список сохраненных статей с главной страницы на iOS
+     */
     public void closeSyncSavedArticlesPopUp() {
         if (isElementPresent(SYNC_YOUR_SAVED_ARTICLES_POPUP))
             this.waitForElementClickableAndClick(CLOSE_SYNC_POPUP_BUTTON, "Кнопка 'Close' для закрытия окна 'Sync your saved articles popup?' не найдена или недоступна для действий.", 10);

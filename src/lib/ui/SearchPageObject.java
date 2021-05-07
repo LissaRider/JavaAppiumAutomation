@@ -1,6 +1,7 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -13,11 +14,12 @@ abstract public class SearchPageObject extends MainPageObject {
             SEARCH_CANCEL_BUTTON, /* BUTTON: кнопка для очистки поля ввода или закрытия формы поиска */
             SEARCH_EMPTY_RESULT_ELEMENT,/* SEARCH RESULT: форма, отображающаяся, если по заданному запросу ничего не найдено */
             SEARCH_RESULT_LIST, /* SEARCH RESULT: список всех найденных результатов */
-            SEARCH_RESULT_LIST_ITEM, /* SEARCH RESULT: элемент списка с результатом поиска */
-            SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL, /* SEARCH RESULT: элемент списка с результатом поиска с указанием текста в нем */
+            SEARCH_RESULT_LIST_ITEM, /* SEARCH RESULT: элемент списка всех найденных результатов (результат поиска) */
+            SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL, /* SEARCH RESULT: элемент списка всех найденных результатов с указанием текста в нем */
             SEARCH_RESULT_LIST_ITEM_TITLE,  /* SEARCH RESULT: заголовок статьи в элементе списка */
-            SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL, /* SEARCH RESULT: заголовок статьи в элементе списка с указанием текста в нем*/
-            SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL; /* SEARCH RESULT: элемент списка с результатом поиска с указанием заголовка и описания в нем*/
+            SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL, /* SEARCH RESULT: заголовок статьи в элементе списка всех найденных результатов с указанием текста в нем */
+            SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL, /* SEARCH RESULT: элемент списка всех найденных результатов с указанием заголовка и описания в нем */
+            RECENT_SEARCHES_YET_ELEMENT; /* SEARCH ELEMENT: элемент с текстои, который отображается при очистке поля ввода для поиска (только iOS) */
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -67,7 +69,10 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void clearSearchInput() {
         this.waitForElementAndClear(SEARCH_INPUT_FIELD, "Поле ввода текста для поиска не найдено.", 5);
-        this.waitForElementNotPresent(SEARCH_RESULT_LIST, "Список результатов все ещё отображается.", 15);
+        if (Platform.getInstance().isAndroid())
+            this.waitForElementNotPresent(SEARCH_RESULT_LIST, "Список результатов все ещё отображается.", 15);
+        else
+            this.waitForElementPresent(RECENT_SEARCHES_YET_ELEMENT,"Список результатов все ещё отображается.", 15);
     }
 
     public List<WebElement> getSearchResultsList() {
@@ -106,7 +111,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public int getAmountOfFoundArticles() {
-        this.waitForElementPresent(SEARCH_RESULT_LIST, "Ничего не найдено по заданному запросу.", 15);
+        this.waitForElementPresent(SEARCH_RESULT_LIST_ITEM, "Ничего не найдено по заданному запросу.", 15);
         return getAmountOfElements(SEARCH_RESULT_LIST_ITEM);
     }
 
@@ -120,5 +125,10 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void assertSearchPlaceholderHasText(String placeholder) {
         this.assertElementHasText(SEARCH_INPUT_FIELD, placeholder, "Поле ввода для поиска статьи содержит некорректный текст.");
+    }
+
+    public void searchByValue(String searchLine) {
+        initSearchInput();
+        typeSearchLine(searchLine);
     }
 }

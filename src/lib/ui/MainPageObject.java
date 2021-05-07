@@ -36,7 +36,10 @@ public class MainPageObject {
 
     public void assertElementHasText(String locator, String expected, String errorMessage) {
         By by = this.getLocatorByString(locator);
-        String actual = driver.findElement(by).getAttribute("text");
+        WebElement element = driver.findElement(by);
+        String actual = Platform.getInstance().isAndroid()
+                ? element.getAttribute("text")
+                : element.getAttribute("value");
         Assert.assertEquals(String.format("\n  Ошибка! %s\n", errorMessage), expected, actual);
     }
 
@@ -230,6 +233,7 @@ public class MainPageObject {
 
     /**
      * Метод для определения типа локатора
+     *
      * @param locatorWithType (String) локатор с заданным типом в формате <b>type:locator</b>
      * @return By
      */

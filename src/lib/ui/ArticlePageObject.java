@@ -23,8 +23,7 @@ abstract public class ArticlePageObject extends MainPageObject {
             ADD_TO_LIST_INIT_FORM,
             READING_LIST_ELEMENT_TPL,
             SAVE_FOR_LATER_BUTTON,
-            TAP_TO_GO_BACK_BUTTON,
-            CLOSE_SYNC_POPUP_BUTTON;
+            TAP_TO_GO_BACK_BUTTON;
 
     public ArticlePageObject(AppiumDriver driver) {
         super(driver);
@@ -46,29 +45,32 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     public String getArticleTitle() {
         WebElement titleElement = waitForTitleElement();
-        if (Platform.getInstance().isAndroid()) {
-            return titleElement.getAttribute("text");
-        } else {
-            return titleElement.getAttribute("name");
-        }
+        return Platform.getInstance().isAndroid() ? titleElement.getAttribute("text") : titleElement.getAttribute("name");
     }
 
     public void swipeToFooter() {
-        if (Platform.getInstance().isAndroid()) {
+        if (Platform.getInstance().isAndroid())
             this.swipeUpToFindElement(ARTICLE_FOOTER_ELEMENT, "Конец статьи не найден.", 40);
-        } else {
+        else
             this.swipeUpTillElementAppear(ARTICLE_FOOTER_ELEMENT, "Конец статьи не найден.", 150);
-        }
     }
 
+    /**
+     * Метод для инициализации добавления статьи в список на Android
+     */
     public void selectAddToReadingListOption() {
         this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
-        this.waitForElementClickableAndClick(OPTIONS_BUTTON, "Кнопка открытия панели действий со статьёй не найдена или недоступна для действий.", 5);
-        this.waitForElementVisible(OPTIONS_MENU, "Панель действий со статьёй не найдена.", 15);
+        this.waitForElementClickableAndClick(OPTIONS_BUTTON, "Кнопка открытия меню действий со статьей не найдена или недоступна для действий.", 5);
+        this.waitForElementVisible(OPTIONS_MENU, "Меню действий со статьей не найдена.", 15);
         String addToReadingListXpath = getOptionByTitle("Add to reading list");
         this.waitForElementClickableAndClick(addToReadingListXpath, "Опция добавления статьи в список не найдена или недоступна для действий.", 5);
     }
 
+    /**
+     * Метод для создани списка и добавления статьи в него на Android
+     *
+     * @param folderName -существующий список статей
+     */
     public void addArticleToNewList(String folderName) {
         selectAddToReadingListOption();
         this.waitForElementVisible(ADD_TO_LIST_INIT_FORM, "Форма добавления статьи в папку не найдена.", 15);
@@ -76,12 +78,17 @@ abstract public class ArticlePageObject extends MainPageObject {
             waitForElementClickableAndClick(ADD_TO_LIST_OVERLAY, "Кнопка 'GOT IT' не найдена или недоступна для действий.", 5);
         else
             this.waitForElementClickableAndClick(CREATE_NEW_LIST_BUTTON, "Кнопка 'Create' не найдена или недоступна для действий.", 5);
-        this.waitForElementVisible(NEW_LIST_CREATION_FORM, "Форма создания новой папки для добавления сстатьи не найдена.", 15);
+        this.waitForElementVisible(NEW_LIST_CREATION_FORM, "Форма создания новой папки для добавления статьи не найдена.", 15);
         this.waitForElementAndClear(NEW_LIST_NAME_INPUT, "Поле ввода имени новой папки для добавления статьи не найдено.", 5);
         this.waitForElementAndSendKeys(NEW_LIST_NAME_INPUT, folderName, "Невозможно ввести текст в поле ввода имени папки для добавления статьи.", 5);
         this.waitForElementClickableAndClick(NEW_LIST_CREATION_OK_BUTTON, "Кнопка 'OK' не найдена или недоступна для действий.", 5);
     }
 
+    /**
+     * Метод для добавления статьи в уже существующий список на Android
+     *
+     * @param folderName -существующий список статей
+     */
     public void addArticleToExistingList(String folderName) {
         selectAddToReadingListOption();
         this.waitForElementVisible(ADD_TO_LIST_INIT_FORM, "Форма добавления статьи в папку не найдена.", 15);
@@ -96,8 +103,11 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.waitForElementClickableAndClick(SAVE_FOR_LATER_BUTTON, "Кнопка 'Save for later' не найдена или недоступна для действий.", 5);
     }
 
+    /**
+     * Метод для закрытия страницы и автоматического перехода на главную страицу на Android
+     */
     public void closeArticle() {
-        this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице панель инструментов не найдена.", 15);
+        this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
         this.waitForElementAndClick(CLOSE_ARTICLE_BUTTON, "Кнопка закрытия статьи не найдена или недоступна для действий.", 10);
     }
 
@@ -105,6 +115,9 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.assertElementPresent(ARTICLE_TITLE, "Заголовок статьи не найден.");
     }
 
+    /**
+     * Метод для закрытия страницы и возврата на главную страницу на iOS
+     */
     public void closeArticleAndReturnToMainPage() {
         this.waitForElementClickableAndClick(TAP_TO_GO_BACK_BUTTON, "Кнопка возврата на главную страницу не найдена или недоступна для действий.", 5);
     }

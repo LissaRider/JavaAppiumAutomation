@@ -7,6 +7,11 @@ import org.junit.Test;
 
 public class GetStartedTest extends CoreTestCase {
 
+    /**
+     * Для успешного прохождения теста необходимо в классе {@link lib.CoreTestCase}
+     * отключить метод {@link CoreTestCase#setUp()#skipWelcomePageForIOSApp()}
+     * @see CoreTestCase
+     */
     @Test
     public void testPassThroughWelcome() {
 

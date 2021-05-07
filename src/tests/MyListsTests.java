@@ -14,72 +14,96 @@ import org.junit.Test;
 
 public class MyListsTests extends CoreTestCase {
 
-    private static final String folderName = "Learning programming";
-
     @Test
     public void testSaveFirstArticleToMyList() {
-        SearchPageObject search = SearchPageObjectFactory.get(driver);
-        search.initSearchInput();
-        search.typeSearchLine("Java");
-        search.waitForNotEmptySearchResults();
-        search.clickByArticleWithSubstring("Object-oriented programming language");
-        ArticlePageObject article = ArticlePageObjectFactory.get(driver);
-        article.waitForTitleElement();
-        String articleTitle = article.getArticleTitle();
-        if (Platform.getInstance().isAndroid()) {
-            article.addArticleToNewList(folderName);
-            article.closeArticle();
-        } else {
-            article.addArticleToSavedList();
-            article.closeArticleAndReturnToMainPage();
-        }
+
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
         NavigationUI navigation = NavigationUIFactory.get(driver);
-        navigation.clickMyLists();
-        MyListsPageObject myLists = MyListsPageObjectFactory.get(driver);
+        MyListsPageObject myListsPage = MyListsPageObjectFactory.get(driver);
+
+        final String searchLine = "Java";
+        searchPage.searchByValue(searchLine);
+
+        searchPage.waitForNotEmptySearchResults();
+
+        final String substring = "Object-oriented programming language";
+        searchPage.clickByArticleWithSubstring(substring);
+
+        articlePage.waitForTitleElement();
+        String articleTitle = articlePage.getArticleTitle();
+
+        final  String folderName = "Learning programming";
         if (Platform.getInstance().isAndroid()) {
-            myLists.openFolderByName(folderName);
+            articlePage.addArticleToNewList(folderName);
+            articlePage.closeArticle();
         } else {
-            myLists.closeSyncSavedArticlesPopUp();
+            articlePage.addArticleToSavedList();
+            articlePage.closeArticleAndReturnToMainPage();
         }
-        myLists.swipeByArticleToDelete(articleTitle);
+
+        navigation.clickMyLists();
+
+        if (Platform.getInstance().isAndroid()) myListsPage.openFolderByName(folderName);
+        else myListsPage.closeSyncSavedArticlesPopUp();
+
+        myListsPage.swipeByArticleToDelete(articleTitle);
     }
 
     @Test
     public void testActionsWithArticlesInMyList() {
+
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
+        NavigationUI navigation = NavigationUIFactory.get(driver);
+        MyListsPageObject myListsPage = MyListsPageObjectFactory.get(driver);
+
         String searchLine;
-        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
-        searchPageObject.initSearchInput();
         searchLine = "World of Tanks";
-        searchPageObject.typeSearchLine(searchLine);
-        searchPageObject.waitForNotEmptySearchResults();
-        searchPageObject.clickByArticleWithTitle(searchLine);
-        ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
-        articlePageObject.waitForTitleElement();
-        String articleAboutWotTitle = articlePageObject.getArticleTitle();
-        String folderName = "Games";
-        articlePageObject.addArticleToNewList(folderName);
-        searchPageObject.initSearchInput();
+        searchPage.searchByValue(searchLine);
+
+        searchPage.waitForNotEmptySearchResults();
+
+        searchPage.clickByArticleWithSubstring(searchLine);
+
+        articlePage.waitForTitleElement();
+        String articleAboutWotTitle = articlePage.getArticleTitle();
+
+        final String folderName = "Games";
+        if (Platform.getInstance().isAndroid()) articlePage.addArticleToNewList(folderName);
+        else articlePage.addArticleToSavedList();
+
         searchLine = "World of Warcraft";
-        searchPageObject.typeSearchLine(searchLine);
-        searchPageObject.waitForNotEmptySearchResults();
-        searchPageObject.clickByArticleWithTitle(searchLine);
-        articlePageObject.waitForTitleElement();
-        String articleAboutWowTitle = articlePageObject.getArticleTitle();
-        articlePageObject.addArticleToExistingList(folderName);
-        articlePageObject.closeArticle();
-        NavigationUI navigationUI = NavigationUIFactory.get(driver);
-        navigationUI.clickMyLists();
-        MyListsPageObject myListsPageObject = MyListsPageObjectFactory.get(driver);
-        myListsPageObject.openFolderByName(folderName);
-        int amountOfArticlesBefore = myListsPageObject.getAmountOfAddedArticles();
+        searchPage.searchByValue(searchLine);
+
+        searchPage.clickByArticleWithSubstring(searchLine);
+
+        articlePage.waitForTitleElement();
+        String articleAboutWowTitle = articlePage.getArticleTitle();
+
+        if (Platform.getInstance().isAndroid()) {
+            articlePage.addArticleToExistingList(folderName);
+            articlePage.closeArticle();
+        } else {
+            articlePage.addArticleToSavedList();
+            articlePage.closeArticleAndReturnToMainPage();
+        }
+
+        navigation.clickMyLists();
+
+        if (Platform.getInstance().isAndroid()) myListsPage.openFolderByName(folderName);
+        else myListsPage.closeSyncSavedArticlesPopUp();
+
+        int amountOfArticlesBefore = myListsPage.getAmountOfAddedArticles();
 
         assertEquals(
                 String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
                 amountOfArticlesBefore,
                 2);
 
-        myListsPageObject.swipeByArticleToDelete(articleAboutWowTitle);
-        int amountOfArticlesAfter = myListsPageObject.getAmountOfAddedArticles();
+        myListsPage.swipeByArticleToDelete(articleAboutWowTitle);
+
+        int amountOfArticlesAfter = myListsPage.getAmountOfAddedArticles();
 
         assertEquals(
                 String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
@@ -87,9 +111,10 @@ public class MyListsTests extends CoreTestCase {
                 amountOfArticlesAfter
         );
 
-        myListsPageObject.clickByArticleWithTitle(articleAboutWotTitle);
-        articlePageObject.waitForTitleElement();
-        String actualTitle = articlePageObject.getArticleTitle();
+        myListsPage.clickByArticleWithTitle(articleAboutWotTitle);
+
+        articlePage.waitForTitleElement();
+        String actualTitle = articlePage.getArticleTitle();
 
         assertEquals(
                 "\n  Ошибка! Отображается некорректное название статьи.\n",

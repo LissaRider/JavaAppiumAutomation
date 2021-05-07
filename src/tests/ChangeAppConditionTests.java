@@ -9,40 +9,57 @@ import org.junit.Test;
 
 public class ChangeAppConditionTests extends CoreTestCase {
 
-  @Test
-  public void testChangeScreenOrientationOnSearchResults() {
-    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
-    searchPageObject.initSearchInput();
-    searchPageObject.typeSearchLine("Java");
-    searchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
-    ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
-    String titleBeforeRotation = articlePageObject.getArticleTitle();
-    this.rotateScreenLandscape();
-    String titleAfterRotation = articlePageObject.getArticleTitle();
+    @Test
+    public void testChangeScreenOrientationOnSearchResults() {
 
-    assertEquals(
-            "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
-            titleBeforeRotation,
-            titleAfterRotation
-    );
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
 
-    this.rotateScreenPortrait();
-    String titleAfterSecondRotation = articlePageObject.getArticleTitle();
+        final String searchLine = "Java";
+        searchPage.searchByValue(searchLine);
 
-    assertEquals(
-            "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
-            titleBeforeRotation,
-            titleAfterSecondRotation
-    );
-  }
+        final String substring = "Object-oriented programming language";
+        searchPage.clickByArticleWithSubstring(substring);
 
-  @Test
-  public void testCheckSearchArticleInBackground() {
-    SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
-    searchPageObject.initSearchInput();
-    searchPageObject.typeSearchLine("Java");
-    searchPageObject.waitForSearchResult("Object-oriented programming language");
-    this.backgroundApp(2);
-    searchPageObject.waitForSearchResult("Object-oriented programming language");
-  }
+        articlePage.waitForTitleElement();
+        String titleBeforeRotation = articlePage.getArticleTitle();
+
+        this.rotateScreenLandscape();
+
+        articlePage.waitForTitleElement();
+        String titleAfterRotation = articlePage.getArticleTitle();
+
+        assertEquals(
+                "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
+                titleBeforeRotation,
+                titleAfterRotation
+        );
+
+        this.rotateScreenPortrait();
+
+        articlePage.waitForTitleElement();
+        String titleAfterSecondRotation = articlePage.getArticleTitle();
+
+        assertEquals(
+                "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
+                titleBeforeRotation,
+                titleAfterSecondRotation
+        );
+    }
+
+    @Test
+    public void testCheckSearchArticleInBackground() {
+
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+
+        final String searchLine = "Java";
+        searchPage.searchByValue(searchLine);
+
+        final String substring = "Object-oriented programming language";
+        searchPage.waitForSearchResult(substring);
+
+        this.backgroundApp(2);
+
+        searchPage.waitForSearchResult(substring);
+    }
 }

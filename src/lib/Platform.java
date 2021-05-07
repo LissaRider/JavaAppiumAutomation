@@ -34,7 +34,7 @@ public class Platform {
         } else if (this.isIOS()) {
             return new IOSDriver(url, this.getIOSDesiredCapabilities());
         } else {
-            throw new Exception(String.format("Невозможно определиь тип драйвера. Платформа: %s", this.getPlatformVar()));
+            throw new Exception(String.format("Невозможно определить тип драйвера. Платформа: %s", this.getPlatformVar()));
         }
     }
 
