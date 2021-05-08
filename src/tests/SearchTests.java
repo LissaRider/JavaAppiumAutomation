@@ -115,14 +115,16 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testSearchArticleWithTitleAndDescription() {
-        Map<String, String> searchResults = new HashMap<>();
-        searchResults.put("Java", "Island of Indonesia");
-        searchResults.put("JavaScript", "Programming language");
-        searchResults.put("Java (programming language)", "Object-oriented programming language");
 
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
-        searchPage.initSearchInput();
-        searchPage.typeSearchLine("Java");
+
+        Map<String, String> searchResults = new HashMap<>();
+
+        searchResults.put("Java", "Island of Indonesia|Indonesian island");
+        searchResults.put("JavaScript", "Programming language|High-level programming language");
+        searchResults.put("Java (programming language)", "Object-oriented programming language");
+
+        searchPage.searchByValue("Java");
 
         int amountOfSearchResults = searchPage.getAmountOfFoundArticles();
 

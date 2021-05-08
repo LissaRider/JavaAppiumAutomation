@@ -5,6 +5,7 @@ import lib.Platform;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 abstract public class SearchPageObject extends MainPageObject {
 
@@ -42,7 +43,17 @@ abstract public class SearchPageObject extends MainPageObject {
     //endregion
 
     public void waitForElementByTitleAndDescription(String title, String description) {
-        String articleWithTitleAndDescriptionXpath = getArticleWithTitleAndDescription(title, description);
+        String articleWithTitleAndDescriptionXpath = "";
+        if (description.contains("|")) {
+            String[] values = description.split(Pattern.quote("|"), 2);
+            String value1 = values[0];
+            String value2 = values[1];
+            articleWithTitleAndDescriptionXpath = !isElementPresent(getArticleWithTitleAndDescription(title, value1))
+                    ? getArticleWithTitleAndDescription(title, value2)
+                    : getArticleWithTitleAndDescription(title, value1);
+        } else {
+            articleWithTitleAndDescriptionXpath = getArticleWithTitleAndDescription(title, description);
+        }
         this.waitForElementPresent(
                 articleWithTitleAndDescriptionXpath,
                 String.format("Не найдена статья с заголовком '%s' и описанием '%s'.", title, description),
