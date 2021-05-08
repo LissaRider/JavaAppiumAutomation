@@ -8,12 +8,13 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     protected static String
             ARTICLE_TITLE,
+            ARTICLE_BANNER_BY_SUBSTRING_TPL,
             ARTICLE_FOOTER_ELEMENT,
             ARTICLE_TOP_TOOLBAR,
             ARTICLE_SEARCH_INIT_ELEMENT, /* INIT ELEMENT: элемент на странице статьи для перехода на форму поиска */
             OPTIONS_BUTTON,
             OPTIONS_MENU,
-            OPTION_BY_TITLE_BUTTON_TPL,
+            OPTION_BUTTON_BY_NAME_TPL,
             ADD_TO_LIST_OVERLAY,
             NEW_LIST_NAME_INPUT,
             NEW_LIST_CREATION_OK_BUTTON,
@@ -21,7 +22,7 @@ abstract public class ArticlePageObject extends MainPageObject {
             NEW_LIST_CREATION_FORM,
             CREATE_NEW_LIST_BUTTON,
             ADD_TO_LIST_INIT_FORM,
-            READING_LIST_ELEMENT_TPL,
+            READING_LIST_BY_NAME_TPL,
             SAVE_FOR_LATER_BUTTON,
             TAP_TO_GO_BACK_BUTTON;
 
@@ -30,17 +31,26 @@ abstract public class ArticlePageObject extends MainPageObject {
     }
 
     //region TEMPLATES METHODS
-    private static String getOptionByTitle(String optionTitle) {
-        return OPTION_BY_TITLE_BUTTON_TPL.replace("{MENU_OPTION}", optionTitle);
+    private static String getOptionByName(String optionTitle) {
+        return OPTION_BUTTON_BY_NAME_TPL.replace("{MENU_OPTION}", optionTitle);
     }
 
     private static String getFolderByName(String folderName) {
-        return READING_LIST_ELEMENT_TPL.replace("{FOLDER_NAME}", folderName);
+        return READING_LIST_BY_NAME_TPL.replace("{FOLDER_NAME}", folderName);
+    }
+
+    private static String getBannerBySubstring(String substring) {
+        return ARTICLE_BANNER_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
     //endregion
 
     public WebElement waitForTitleElement() {
         return this.waitForElementPresent(ARTICLE_TITLE, "Заголовок статьи не найден.", 15);
+    }
+
+    public WebElement waitForBannerElement(String substring) {
+        String bannerBySubstringXpath = getBannerBySubstring(substring);
+        return this.waitForElementVisible(bannerBySubstringXpath, String.format("На странице баннер с текстом '%s' не найден.", substring), 15);
     }
 
     public String getArticleTitle() {
@@ -62,7 +72,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
         this.waitForElementClickableAndClick(OPTIONS_BUTTON, "Кнопка открытия меню действий со статьей не найдена или недоступна для действий.", 5);
         this.waitForElementVisible(OPTIONS_MENU, "Меню действий со статьей не найдена.", 15);
-        String addToReadingListXpath = getOptionByTitle("Add to reading list");
+        String addToReadingListXpath = getOptionByName("Add to reading list");
         this.waitForElementClickableAndClick(addToReadingListXpath, "Опция добавления статьи в список не найдена или недоступна для действий.", 5);
     }
 

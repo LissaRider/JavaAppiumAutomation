@@ -101,13 +101,12 @@ public class SearchTests extends CoreTestCase {
 
         List<WebElement> articleTitles = searchPage.getSearchResultsList();
 
-        int n = Platform.getInstance().isAndroid() ? 0 : 1;
-        for (int i = n; i < articleTitles.size(); i++) {
+        for (int i = 0; i < articleTitles.size(); i++) {
             final WebElement titleElement = articleTitles.get(i);
             String articleTitle = Platform.getInstance().isAndroid()
                     ? titleElement.getAttribute("text").toLowerCase()
                     : titleElement.getAttribute("name").toLowerCase();
-            System.out.println(titleElement.getAttribute("name").toLowerCase());
+
             assertTrue(
                     String.format("\n  Ошибка! В заголовке найденной статьи с индексом [%d] отсутствует заданное для поиска значение '%s'.\n", i, searchValue),
                     articleTitle.contains(searchValue.toLowerCase()));

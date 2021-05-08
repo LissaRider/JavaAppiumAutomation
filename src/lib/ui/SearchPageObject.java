@@ -72,7 +72,7 @@ abstract public class SearchPageObject extends MainPageObject {
         if (Platform.getInstance().isAndroid())
             this.waitForElementNotPresent(SEARCH_RESULT_LIST, "Список результатов все ещё отображается.", 15);
         else
-            this.waitForElementPresent(RECENT_SEARCHES_YET_ELEMENT,"Список результатов все ещё отображается.", 15);
+            this.waitForElementVisible(RECENT_SEARCHES_YET_ELEMENT, "Список результатов все ещё отображается.", 15);
     }
 
     public List<WebElement> getSearchResultsList() {
@@ -87,9 +87,9 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForElementAndSendKeys(SEARCH_INPUT_FIELD, substring, "Поле ввода текста для поиска не найдено.", 5);
     }
 
-    public void waitForSearchResult(String substring) {
+    public WebElement waitForSearchResult(String substring) {
         String searchResultXpath = getResultSearchElementWithSubstring(substring);
-        this.waitForElementPresent(searchResultXpath, String.format("Текст '%s' не найден.", substring), 15);
+        return this.waitForElementPresent(searchResultXpath, String.format("Текст '%s' не найден.", substring), 15);
     }
 
     public void waitForNumberOfResultsMoreThan(int resultsCount) {
@@ -111,7 +111,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public int getAmountOfFoundArticles() {
-        this.waitForElementPresent(SEARCH_RESULT_LIST_ITEM, "Ничего не найдено по заданному запросу.", 15);
+        this.waitForElementVisible(SEARCH_RESULT_LIST_ITEM, "Ничего не найдено по заданному запросу.", 15);
         return getAmountOfElements(SEARCH_RESULT_LIST_ITEM);
     }
 

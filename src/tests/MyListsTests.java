@@ -33,7 +33,7 @@ public class MyListsTests extends CoreTestCase {
         articlePage.waitForTitleElement();
         String articleTitle = articlePage.getArticleTitle();
 
-        final  String folderName = "Learning programming";
+        final String folderName = "Learning programming";
         if (Platform.getInstance().isAndroid()) {
             articlePage.addArticleToNewList(folderName);
             articlePage.closeArticle();
@@ -50,6 +50,9 @@ public class MyListsTests extends CoreTestCase {
         myListsPage.swipeByArticleToDelete(articleTitle);
     }
 
+    /**
+     * Тестовый метод, где проверка осуществляется по заголовку статьи в iOS
+     */
     @Test
     public void testActionsWithArticlesInMyList() {
 
@@ -75,6 +78,8 @@ public class MyListsTests extends CoreTestCase {
 
         searchLine = "World of Warcraft";
         searchPage.searchByValue(searchLine);
+
+        searchPage.waitForNotEmptySearchResults();
 
         searchPage.clickByArticleWithSubstring(searchLine);
 
@@ -120,5 +125,94 @@ public class MyListsTests extends CoreTestCase {
                 "\n  Ошибка! Отображается некорректное название статьи.\n",
                 articleAboutWotTitle,
                 actualTitle);
+    }
+
+    /**
+     * Тестовый метод, где проверка осуществляется по тексту баннера на странице статьи в iOS
+     */
+    @Test
+    public void testArticleDeletionFromReadingList() {
+
+        SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
+        ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
+        NavigationUI navigation = NavigationUIFactory.get(driver);
+        MyListsPageObject myListsPage = MyListsPageObjectFactory.get(driver);
+
+        String searchLine;
+        searchLine = "TeamCity";
+        searchPage.searchByValue(searchLine);
+
+        searchPage.waitForNotEmptySearchResults();
+
+        final String substringForTeamCity = searchLine;
+        searchPage.clickByArticleWithSubstring(substringForTeamCity);
+
+        final String folderName = "CI servers";
+        String articleAboutTeamCityTitle = "";
+        if (Platform.getInstance().isAndroid()) {
+            articlePage.waitForTitleElement();
+            articleAboutTeamCityTitle = articlePage.getArticleTitle();
+            articlePage.addArticleToNewList(folderName);
+        } else {
+            articlePage.waitForBannerElement(substringForTeamCity);
+            articleAboutTeamCityTitle = substringForTeamCity;
+            articlePage.addArticleToSavedList();
+        }
+
+        searchLine = "Jenkins";
+        searchPage.searchByValue(searchLine);
+
+        searchPage.waitForNotEmptySearchResults();
+
+        final String substringForJenkins = "Jenkins (software)";
+        searchPage.clickByArticleWithSubstring(substringForJenkins);
+
+        String articleAboutJenkinsTitle = "";
+        if (Platform.getInstance().isAndroid()) {
+            articlePage.waitForTitleElement();
+            articleAboutJenkinsTitle = articlePage.getArticleTitle();
+            articlePage.addArticleToExistingList(folderName);
+            articlePage.closeArticle();
+        } else {
+            articlePage.waitForBannerElement(substringForJenkins);
+            articleAboutJenkinsTitle = substringForJenkins;
+            articlePage.addArticleToSavedList();
+            articlePage.closeArticleAndReturnToMainPage();
+        }
+
+        navigation.clickMyLists();
+
+        if (Platform.getInstance().isAndroid()) myListsPage.openFolderByName(folderName);
+        else myListsPage.closeSyncSavedArticlesPopUp();
+
+        int amountOfArticlesBefore = myListsPage.getAmountOfAddedArticles();
+
+        assertEquals(
+                String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
+                amountOfArticlesBefore,
+                2);
+
+        myListsPage.swipeByArticleToDelete(articleAboutJenkinsTitle);
+
+        int amountOfArticlesAfter = myListsPage.getAmountOfAddedArticles();
+
+        assertEquals(
+                String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
+                amountOfArticlesBefore - 1,
+                amountOfArticlesAfter
+        );
+
+        myListsPage.clickByArticleWithTitle(articleAboutTeamCityTitle);
+
+        if (Platform.getInstance().isAndroid()) {
+            articlePage.waitForTitleElement();
+            String actualTitle = articlePage.getArticleTitle();
+            assertEquals(
+                    "\n  Ошибка! Отображается некорректное название статьи.\n",
+                    articleAboutTeamCityTitle,
+                    actualTitle);
+        } else {
+            articlePage.waitForBannerElement(substringForTeamCity);
+        }
     }
 }
