@@ -18,7 +18,7 @@ _./libs_
 | javax.websocket         | javax.websocket-api | 1.1     | Java API for WebSocket                         | [javaee/websocket-spec](https://github.com/javaee/websocket-spec)      | 
 ## Приложения для тестирования
 
-#### Расположение (*.apk)
+#### Расположение (*.apk, *.app)
 
 _./apks_
 
